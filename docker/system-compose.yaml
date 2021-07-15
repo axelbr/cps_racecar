@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+
+  system:
+    image: f1tenth/system:latest
+    build:
+      context: 
+      dockerfile: ./dockerfiles/system.Dockerfile
+    devices:
+      - "/dev/sensors/hokuyo:/dev/sensors/hokuyo"
+      - "/dev/sensors/vesc:/dev/sensors/vesc"
+      - "/dev/input/joypad-f710:/dev/input/joypad-f710"
+    network_mode: host
+    command: roslaunch racecar teleop.launch
+
+  bridge:
+    image: ros:foxy-ros1-bridge
+    environment:
+      - "ROS_HOSTNAME=car2"
+      - "ROS_MASTER_URI=http://localhost:11311"
+    command: ros2 run ros1_bridge dynamic_bridge --bridge-all-topics
+    network_mode: host
