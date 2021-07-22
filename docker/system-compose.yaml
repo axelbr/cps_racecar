@@ -5,7 +5,7 @@ services:
   system:
     image: f1tenth/system:latest
     build:
-      context: 
+      context: .
       dockerfile: ./dockerfiles/system.Dockerfile
     devices:
       - "/dev/sensors/hokuyo:/dev/sensors/hokuyo"
