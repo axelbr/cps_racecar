@@ -22,6 +22,8 @@ RUN apt-get update && apt-get install -y \
   ros-${DISTRO}-launch-testing-ros \
   python3-autopep8 \
   ros-${DISTRO}-desktop \
+  ros-${DISTRO}-navigation2 \
+  ros-${DISTRO}-nav2-bringup \
   libglvnd0 \
   libgl1 \
   libglx0 \
