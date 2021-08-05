@@ -24,6 +24,7 @@ RUN apt-get update && apt-get install -y \
   ros-${DISTRO}-desktop \
   ros-${DISTRO}-navigation2 \
   ros-${DISTRO}-nav2-bringup \
+  ros-${DISTRO}-libg2o \
   libglvnd0 \
   libgl1 \
   libglx0 \
@@ -32,6 +33,8 @@ RUN apt-get update && apt-get install -y \
   libx11-6 \
   && rm -rf /var/lib/apt/lists/* \
   && rosdep init || echo "rosdep already initialized"
+
+
 
 ENV NVIDIA_VISIBLE_DEVICES all
 ENV NVIDIA_DRIVER_CAPABILITIES graphics,utility,compute

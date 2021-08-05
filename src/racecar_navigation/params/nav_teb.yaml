@@ -102,30 +102,27 @@ controller_server:
       yaw_goal_tolerance: 0.25
       stateful: True
     FollowPath:
-      plugin: "nav2_regulated_pure_pursuit_controller::RegulatedPurePursuitController"
-      desired_linear_vel: 1.5
-      max_linear_accel: 30.0
-      max_linear_decel: 10.0
-      lookahead_dist: 0.6
-      min_lookahead_dist: 0.3
-      max_lookahead_dist: 0.9
-      lookahead_time: 1.5
-      rotate_to_heading_angular_vel: 1.8
-      transform_tolerance: 0.1
-      use_velocity_scaled_lookahead_dist: false
-      min_approach_linear_velocity: 0.5
-      use_approach_linear_velocity_scaling: true
-      max_allowed_time_to_collision: 0.5
-      use_regulated_linear_velocity_scaling: false
-      use_cost_regulated_linear_velocity_scaling: false
-      regulated_linear_scaling_min_radius: 0.9
-      regulated_linear_scaling_min_speed: 1.0
-      use_rotate_to_heading: true
-      rotate_to_heading_min_angle: 0.785
-      max_angular_accel: 3.2
-      cost_scaling_dist: 0.3
-      cost_scaling_gain: 1.0
-      inflation_cost_scaling_factor: 3.0
+      plugin: "teb_local_planner::TebLocalPlannerROS"
+      footprint_model.type: circular
+      footprint_model.radius: 0.17
+      min_obstacle_dist: 0.1
+      inflation_dist: 0.1
+      costmap_converter_plugin: "costmap_converter::CostmapToPolygonsDBSMCCH"
+      costmap_converter_spin_thread: True
+      costmap_converter_rate: 15
+      enable_homotopy_class_planning: True
+      enable_multithreading: True
+      optimization_verbose: False
+      teb_autoresize: True
+      min_samples: 3
+      max_samples: 20
+      max_global_plan_lookahead_dist: 1.0
+      visualize_hc_graph: True
+      max_vel_x: 0.26
+      max_vel_theta: 1.0
+      acc_lim_x: 2.5
+      acc_lim_theta: 3.2
+
 
 lifecycle_manager:
   ros__parameters:

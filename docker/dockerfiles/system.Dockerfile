@@ -4,6 +4,8 @@ FROM ros:melodic-robot
 RUN apt-get update && apt-get install -y \
       ros-${ROS_DISTRO}-driver-base \
       ros-${ROS_DISTRO}-urg-node \
+      ros-${ROS_DISTRO}-teb-local-planner-tutorials \
+      ros-${ROS_DISTRO}-ackermann-msgs \
       libyaml-cpp-dev && \
     rm -rf /var/lib/apt/lists/*
 
