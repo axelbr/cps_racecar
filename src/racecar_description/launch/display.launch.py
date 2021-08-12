@@ -5,7 +5,7 @@ import os
 
 def generate_launch_description():
     pkg_share = launch_ros.substitutions.FindPackageShare(package='racecar_description').find('racecar_description')
-    default_model_path = os.path.join(pkg_share, 'src/description/racecar_description.urdf')
+    default_model_path = os.path.join(pkg_share, 'urdf/racecar.xacro')
     default_rviz_config_path = os.path.join(pkg_share, 'rviz/urdf_config.rviz')
 
     robot_state_publisher_node = launch_ros.actions.Node(
@@ -34,7 +34,7 @@ def generate_launch_description():
     )
 
     return launch.LaunchDescription([
-        launch.actions.DeclareLaunchArgument(name='gui', default_value='True',
+        launch.actions.DeclareLaunchArgument(name='gui', default_value='False',
                                             description='Flag to enable joint_state_publisher_gui'),
         launch.actions.DeclareLaunchArgument(name='model', default_value=default_model_path,
                                             description='Absolute path to robot urdf file'),
