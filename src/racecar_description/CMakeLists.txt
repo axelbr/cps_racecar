@@ -30,6 +30,9 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
+#file(GLOB xacro_files urdf/*.xacro)
+#xacro_add_files(${xacro_files} TARGET media_files)
+
 install(DIRECTORY
   meshes rviz urdf launch
   DESTINATION share/${PROJECT_NAME}
