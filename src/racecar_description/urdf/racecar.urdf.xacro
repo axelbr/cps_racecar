@@ -54,7 +54,7 @@
   <xacro:macro name="chassis_geometry">
     <origin xyz="0.46 -0.135 -0.180" rpy="1.57 0 3.14" />
     <geometry>
-      <mesh filename="package://racecar_description/meshes/chassis.stl" scale="0.000990 0.0009375 0.0009375"/>
+      <mesh filename="file://$(find racecar_description)/meshes/chassis.stl" scale="0.000990 0.0009375 0.0009375"/>
     </geometry>
   </xacro:macro>
 
@@ -62,42 +62,42 @@
   <xacro:macro name="left_rear_wheel_geometry">
     <origin xyz="0 0 0" rpy="0 0 0" />
     <geometry>
-      <mesh filename="package://racecar_description/meshes/left_wheel.stl" />
+      <mesh filename="file://$(find racecar_description)/meshes/left_wheel.stl" />
     </geometry>
   </xacro:macro>
 
   <xacro:macro name="right_rear_wheel_geometry">
     <origin xyz="0 0 0" rpy="0 0 0" />
     <geometry>
-      <mesh filename="package://racecar_description/meshes/right_wheel.stl" />
+      <mesh filename="file://$(find racecar_description)/meshes/right_wheel.stl" />
     </geometry>
   </xacro:macro>
 
   <xacro:macro name="left_front_wheel_geometry">
     <origin xyz="0 0 0" rpy="0 0 0" />
     <geometry>
-      <mesh filename="package://racecar_description/meshes/left_wheel.stl" />
+      <mesh filename="file://$(find racecar_description)/meshes/left_wheel.stl" />
     </geometry>
   </xacro:macro>
 
   <xacro:macro name="right_front_wheel_geometry">
     <origin xyz="0 0 0" rpy="0 0 0" />
     <geometry>
-      <mesh filename="package://racecar_description/meshes/right_wheel.stl" />
+      <mesh filename="file://$(find racecar_description)/meshes/right_wheel.stl" />
     </geometry>
   </xacro:macro>
 
   <xacro:macro name="left_steering_hinge_geometry">
     <origin xyz="0 0 0" rpy="0 0 0" />
     <geometry>
-      <mesh filename="package://racecar_description/meshes/hinge.stl" />
+      <mesh filename="file://$(find racecar_description)/meshes/hinge.stl" />
     </geometry>
   </xacro:macro>
 
   <xacro:macro name="right_steering_hinge_geometry">
     <origin xyz="0 0 0" rpy="0 0 0" />
     <geometry>
-      <mesh filename="package://racecar_description/meshes/hinge.stl" />
+      <mesh filename="file://$(find racecar_description)/meshes/hinge.stl" />
     </geometry>
   </xacro:macro>
 
@@ -331,7 +331,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://racecar_description/meshes/hokuyo.stl"/>
+        <mesh filename="file://$(find racecar_description)/meshes/hokuyo.stl"/>
         <material name="grey" />
       </geometry>
     </visual>
@@ -438,7 +438,7 @@
     <material>Gazebo/Black</material>
   </gazebo>
 
-  <!-- Gazebo plugins -->
+  <!-- Gazebo plugins 
 
   <gazebo>
     <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
@@ -447,7 +447,6 @@
     </plugin>
   </gazebo>
 
-  <!-- Odometry (cheap hack) -->
   <gazebo>
     <plugin name="p3d_base_controller" filename="libgazebo_ros_p3d.so">
       <alwaysOn>true</alwaysOn>
@@ -461,7 +460,6 @@
     </plugin>
   </gazebo>
 
-    <!-- hokuyo -->
   <xacro:unless value="$(optenv DISABLE_GAZEBO_LASER false)">
     <gazebo reference="$(arg robot_name)laser">
       <material>Gazebo/Grey</material>
@@ -495,7 +493,7 @@
       </sensor>
     </gazebo>
   </xacro:unless>
-
+-->
   <material name="black">
     <color rgba="0.0 0.0 0.0 1.0"/>
   </material>
