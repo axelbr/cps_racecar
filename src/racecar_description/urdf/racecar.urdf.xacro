@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 
-<robot name="racecar" xmlns:xacro="http://www.ros.org/wiki/xacro">
+<robot name="racecar"
+  xmlns:xacro="http://www.ros.org/wiki/xacro">
 
   <!-- Global namespace -->
   <xacro:arg name="robot_name" default="" />
@@ -11,41 +12,31 @@
   <xacro:macro name="chassis_inertial_params">
     <origin xyz="0.1477 0 0" rpy="0 0 0" />
     <mass value="4.0" />
-    <inertia ixx="0.010609" ixy="0"          ixz="0"
-                            iyy="0.050409"   iyz="0"
-                                             izz="0.05865" />
+    <inertia ixx="0.010609" ixy="0" ixz="0" iyy="0.050409" iyz="0" izz="0.05865" />
   </xacro:macro>
 
   <xacro:macro name="left_wheels_inertial_params">
     <origin xyz="0 0 -0.0225" rpy="0 0 0" />
     <mass value="0.34055" />
-    <inertia ixx="0.00026046" ixy="0"          ixz="0"
-                              iyy="0.00026046" iyz="0"
-                                               izz="0.00041226" />
+    <inertia ixx="0.00026046" ixy="0" ixz="0" iyy="0.00026046" iyz="0" izz="0.00041226" />
   </xacro:macro>
 
   <xacro:macro name="right_wheels_inertial_params">
     <origin xyz="0 0 0.0225" rpy="0 0 0" />
     <mass value="0.34055" />
-    <inertia ixx="0.00026046" ixy="0"          ixz="0"
-                              iyy="0.00026046" iyz="0"
-                                               izz="0.00041226" />
+    <inertia ixx="0.00026046" ixy="0" ixz="0" iyy="0.00026046" iyz="0" izz="0.00041226" />
   </xacro:macro>
 
   <xacro:macro name="steering_hinge_inertial_params">
     <origin xyz="0 0 0" rpy="0 0 0" />
     <mass value="0.100" />
-    <inertia ixx="4E-06" ixy="0"           ixz="0"
-                              iyy="4E-06"  iyz="0"
-                                                izz="4E-06" />
+    <inertia ixx="4E-06" ixy="0" ixz="0" iyy="4E-06" iyz="0" izz="4E-06" />
   </xacro:macro>
 
   <xacro:macro name="hokuyo_inertial_params">
     <origin xyz="0 0 0" rpy="0 0 0" />
     <mass value="0.130" />
-    <inertia ixx="4E-06" ixy="0"           ixz="0"
-                              iyy="4E-06"  iyz="0"
-                                                izz="4E-06" />
+    <inertia ixx="4E-06" ixy="0" ixz="0" iyy="4E-06" iyz="0" izz="4E-06" />
   </xacro:macro>
 
 
@@ -318,7 +309,7 @@
 
   <!-- Add Hokuyo laser scanner -->
 
-  <link name="$(arg robot_name)laser">
+  <link name="$(arg robot_name)laser_link">
     <inertial>
       <xacro:hokuyo_inertial_params />
     </inertial>
@@ -340,7 +331,7 @@
   <joint name="$(arg robot_name)hokuyo_joint" type="fixed">
     <origin xyz="0.125 0.0 0.155" rpy="0 0 0"/>
     <parent link="$(arg robot_name)chassis" />
-    <child link="$(arg robot_name)laser" />
+    <child link="$(arg robot_name)laser_link" />
     <axis xyz="0 0 1" />
   </joint>
 
@@ -374,8 +365,6 @@
     <!-- <limit lower="0.0" upper="0.0" effort="0.0" velocity="0.0" /> -->
   </joint>
 
-
-
   <link name="$(arg robot_name)right_link">
     <inertial>
       <mass value="1e-5" />
@@ -392,21 +381,36 @@
     <axis xyz="0 0 1" />
   </joint>
 
+  <ros2_control name="GazeboSystem" type="system">
+    <hardware>
+      <plugin>gazebo_ros2_control/GazeboSystem</plugin>
+    </hardware>
+    <joint name="slider_to_cart">
+      <command_interface name="effort">
+        <param name="min">-1000</param>
+        <param name="max">1000</param>
+      </command_interface>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+      <state_interface name="effort"/>
+    </joint>
+  </ros2_control>
+
   <!-- Gazebo references -->
 
   <gazebo reference="$(arg robot_name)chassis">
     <mu1 value="0.0"/>
     <mu2 value="0.0"/>
-    <kp  value="10000000.0" />
-    <kd  value="1.0" />
+    <kp value="10000000.0" />
+    <kd value="1.0" />
     <material>Gazebo/$(arg robot_skin)</material>
   </gazebo>
 
   <gazebo reference="$(arg robot_name)left_rear_wheel">
     <mu1 value="1.0"/>
     <mu2 value="1.0"/>
-    <kp  value="10000000.0" />
-    <kd  value="1.0" />
+    <kp value="10000000.0" />
+    <kd value="1.0" />
     <fdir1 value="1 0 0"/>
     <material>Gazebo/Black</material>
   </gazebo>
@@ -414,8 +418,8 @@
   <gazebo reference="$(arg robot_name)right_rear_wheel">
     <mu1 value="1.0"/>
     <mu2 value="1.0"/>
-    <kp  value="10000000.0" />
-    <kd  value="1.0" />
+    <kp value="10000000.0" />
+    <kd value="1.0" />
     <fdir1 value="1 0 0"/>
     <material>Gazebo/Black</material>
   </gazebo>
@@ -423,8 +427,8 @@
   <gazebo reference="$(arg robot_name)left_front_wheel">
     <mu1 value="1.0"/>
     <mu2 value="1.0"/>
-    <kp  value="10000000.0" />
-    <kd  value="1.0" />
+    <kp value="10000000.0" />
+    <kd value="1.0" />
     <fdir1 value="0 0 1"/>
     <material>Gazebo/Black</material>
   </gazebo>
@@ -432,8 +436,8 @@
   <gazebo reference="$(arg robot_name)right_front_wheel">
     <mu1 value="1.0"/>
     <mu2 value="1.0"/>
-    <kp  value="10000000.0" />
-    <kd  value="1.0" />
+    <kp value="10000000.0" />
+    <kd value="1.0" />
     <fdir1 value="0 0 1"/>
     <material>Gazebo/Black</material>
   </gazebo>
@@ -461,39 +465,47 @@
   </gazebo>
 
   <xacro:unless value="$(optenv DISABLE_GAZEBO_LASER false)">
-    <gazebo reference="$(arg robot_name)laser">
-      <material>Gazebo/Grey</material>
-      <sensor type="ray" name="$(arg robot_name)hokuyo_sensor">
-        <pose>0 0 0.0124 0 0 0</pose>
-        <visualize>false</visualize>
-        <update_rate>40</update_rate>
-        <ray>
-          <scan>
-            <horizontal>
-              <samples>1081</samples>
-              <resolution>1</resolution>
-              <min_angle>-2.3561944902</min_angle>
-              <max_angle>2.3561944902</max_angle>
-            </horizontal>
-          </scan>
-          <range>
-            <min>0.1</min>
-            <max>30.0</max>
-            <resolution>0.01</resolution>
-          </range>
-          <noise>
-            <mean>0.0</mean>
-            <stddev>0.01</stddev>
-          </noise>
-        </ray>
-        <plugin name="hokuyo_controller" filename="libgazebo_ros_laser.so">
-          <topicName>/$(arg robot_name)/scan</topicName>
-          <frameName>$(arg robot_name)laser</frameName>
-        </plugin>
-      </sensor>
-    </gazebo>
+   
   </xacro:unless>
 -->
+
+
+
+  <gazebo reference="$(arg robot_name)laser_link">
+    <sensor name="$(arg robot_name)hokuyo_sensor" type="gpu_ray">
+      <visualize>true</visualize>
+      <update_rate>40</update_rate>
+      <pose>0 0 0.0124 0 0 0</pose>
+      <ray>
+        <scan>
+          <horizontal>
+            <samples>1081</samples>
+            <resolution>1</resolution>
+            <min_angle>-2.3561944902</min_angle>
+            <max_angle>2.3561944902</max_angle>
+          </horizontal>
+        </scan>
+        <range>
+          <min>0.1</min>
+          <max>30.0</max>
+          <resolution>0.01</resolution>
+        </range>
+        <noise>
+          <mean>0.0</mean>
+          <stddev>0.01</stddev>
+        </noise>
+      </ray>
+      <plugin name="scan" filename="libgazebo_ros_ray_sensor.so">
+        <ros>
+          <namespace>/$(arg robot_name)</namespace>
+          <remapping>~/out:=scan</remapping>
+        </ros>
+        <output_type>sensor_msgs/LaserScan</output_type>
+        <frame_name>$(arg robot_name)laser_link</frame_name>
+      </plugin>
+    </sensor>
+  </gazebo>
+
   <material name="black">
     <color rgba="0.0 0.0 0.0 1.0"/>
   </material>

@@ -22,12 +22,7 @@ def generate_launch_description():
         name='joint_state_publisher',
         condition=launch.conditions.UnlessCondition(LaunchConfiguration('gui'))
     )
-    joint_state_publisher_gui_node = launch_ros.actions.Node(
-        package='joint_state_publisher_gui',
-        executable='joint_state_publisher_gui',
-        name='joint_state_publisher_gui',
-        condition=launch.conditions.IfCondition(LaunchConfiguration('gui'))
-    )
+
     rviz_node = launch_ros.actions.Node(
         package='rviz2',
         executable='rviz2',
@@ -43,9 +38,8 @@ def generate_launch_description():
         output='screen'
     )
 
-
     return launch.LaunchDescription([
-        launch.actions.DeclareLaunchArgument(name='gui', default_value='True',
+        launch.actions.DeclareLaunchArgument(name='gui', default_value='False',
                                             description='Flag to enable joint_state_publisher_gui'),
         launch.actions.DeclareLaunchArgument(name='model', default_value=default_model_path,
                                             description='Absolute path to robot urdf file'),
@@ -58,7 +52,6 @@ def generate_launch_description():
         launch.actions.ExecuteProcess(cmd=['gazebo', '--verbose', '-s', 'libgazebo_ros_factory.so', LaunchConfiguration('track')], output='screen'),
 
         robot_state_publisher_node,
-        joint_state_publisher_gui_node,
         joint_state_publisher_node,
         rviz_node,
         spawn_entity
