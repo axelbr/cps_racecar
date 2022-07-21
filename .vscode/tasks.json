@@ -15,11 +15,30 @@
             },
             "problemMatcher": "$gcc"
         },
+         {
+            "label": "build single package",
+            "detail": "Build single ROS2 package",
+            "type": "shell",
+            "command": "colcon build --symlink-install --packages-select ${input:package} --cmake-args '-DCMAKE_EXPORT_COMPILE_COMMANDS=On'",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$gcc"
+        },
         {
             "label": "debug",
             "detail": "Build workspace (debug)",
             "type": "shell",
             "command": "colcon build --symlink-install --cmake-args '-DCMAKE_BUILD_TYPE=Debug' -Wall -Wextra -Wpedantic",
+            "group": "build",
+            "problemMatcher": "$gcc"
+        },
+          {
+            "label": "debug single package",
+            "detail": "Build single ROS2 package with debug symbols",
+            "type": "shell",
+            "command": "colcon build --symlink-install --packages-select ${input:package} --cmake-args '-DCMAKE_BUILD_TYPE=Debug'",
             "group": "build",
             "problemMatcher": "$gcc"
         },

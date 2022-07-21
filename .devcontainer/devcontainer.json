@@ -3,11 +3,12 @@
 	"dockerFile": "Dockerfile",
 	"build": {
 		"args": {
-			"DISTRO": "foxy",
+			"USERNAME": "${localEnv:USER}",
+			"DISTRO": "humble",
 			"WORKSPACE": "${containerWorkspaceFolder}"
 		}
 	},
-	"remoteUser": "ros",
+	"remoteUser": "${localEnv:USER}",
 	"runArgs": [
 		"--gpus=all",
 		"--privileged",
@@ -28,11 +29,13 @@
 		"terminal.integrated.defaultProfile.linux": "bash"
 	},
 	"extensions": [
+	        "jeff-hykin.better-cpp-syntax",
 		"dotjoshjohnson.xml",
 		"zachflower.uncrustify",
 		"ms-azuretools.vscode-docker",
 		"ms-iot.vscode-ros",
 		"ms-python.python",
+		"ms-python.vscode-pylance",
 		"ms-vscode.cpptools",
 		"redhat.vscode-yaml",
 		"smilerobotics.urdf",
