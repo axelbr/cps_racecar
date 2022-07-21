@@ -1,0 +1,10 @@
+<library path="racecar_hardware">
+  <class name="racecar_hardware/VescSystemInterface"
+         type="racecar_hardware::VescSystemInterface"
+         base_class_type="hardware_interface::SystemInterface">
+    <description>
+      VESC hardware abstraction.
+    </description>
+  </class>
+</library>
+
