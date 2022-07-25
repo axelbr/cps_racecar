@@ -4,11 +4,14 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include "serial_driver/serial_driver.hpp"
+
 
 #include "hardware_interface/handle.hpp"
 #include "hardware_interface/hardware_info.hpp"
 #include "hardware_interface/system_interface.hpp"
 #include "hardware_interface/types/hardware_interface_return_values.hpp"
+
 #include "rclcpp/clock.hpp"
 #include "rclcpp/duration.hpp"
 #include "rclcpp/macros.hpp"
@@ -26,7 +29,6 @@ struct FirmwareVersion {
   int minor;
 };
 
-
 class VescSystemInterface: public hardware_interface::SystemInterface {
   
   public:
@@ -42,13 +44,23 @@ class VescSystemInterface: public hardware_interface::SystemInterface {
   hardware_interface::return_type write(const rclcpp::Time & time, const rclcpp::Duration & period) override;
 
 private:
-  std::shared_ptr<vesc_driver::VescPacketImu const> imu_data_;
-  std::shared_ptr<vesc_driver::VescPacketFWVersion const> firmware_data_;
-  std::shared_ptr<vesc_driver::VescPacketValues const> state_;
+  double hw_start_sec_;
+  double hw_stop_sec_;
+
+  // Store the command for the simulated robot
+  std::vector<double> hw_commands_;
+  std::vector<double> hw_positions_;
+  std::vector<double> hw_velocities_;
+
+  // Store the wheeled robot position
+  double base_x_, base_y_, base_theta_;
 
   std::string hw_port_;
-  vesc_driver::VescInterface vesc_;
-  
+  FirmwareVersion fw_version_;
+  std::unique_ptr<serial::Serial> serial_;
+
+  void connect(const std::string& port);
+
   void packet_callback(const std::shared_ptr<vesc_driver::VescPacket const>& packet);
   void error_callback(const std::string& error);
 };

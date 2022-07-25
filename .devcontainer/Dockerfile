@@ -26,6 +26,9 @@ RUN apt-get update && apt-get install -y \
   ros-${DISTRO}-navigation2 \
   ros-${DISTRO}-nav2-bringup \
   ros-${DISTRO}-libg2o \
+  ros-${DISTRO}-xacro \
+  ros-${DISTRO}-ros2-control \
+  ros-${DISTRO}-ros2-controllers \
   libglvnd0 \
   libgl1 \
   libglx0 \

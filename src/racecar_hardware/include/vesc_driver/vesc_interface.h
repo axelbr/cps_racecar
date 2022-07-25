@@ -1,32 +1,37 @@
 // Copyright 2020 F1TENTH Foundation
 //
-// Redistribution and use in source and binary forms, with or without modification, are permitted
-// provided that the following conditions are met:
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are met:
 //
-// 1. Redistributions of source code must retain the above copyright notice, this list of conditions
-//    and the following disclaimer.
+//   * Redistributions of source code must retain the above copyright
+//     notice, this list of conditions and the following disclaimer.
 //
-// 2. Redistributions in binary form must reproduce the above copyright notice, this list
-//    of conditions and the following disclaimer in the documentation and/or other materials
-//    provided with the distribution.
+//   * Redistributions in binary form must reproduce the above copyright
+//     notice, this list of conditions and the following disclaimer in the
+//     documentation and/or other materials provided with the distribution.
 //
-// 3. Neither the name of the copyright holder nor the names of its contributors may be used
-//    to endorse or promote products derived from this software without specific prior
-//    written permission.
+//   * Neither the name of the {copyright_holder} nor the names of its
+//     contributors may be used to endorse or promote products derived from
+//     this software without specific prior written permission.
 //
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
-// IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
-// FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
-// CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-// DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
-// WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
-// WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
 
 // -*- mode:c++; fill-column: 100; -*-
 
-#ifndef VESC_DRIVER_VESC_INTERFACE_H_
-#define VESC_DRIVER_VESC_INTERFACE_H_
+#ifndef VESC_DRIVER__VESC_INTERFACE_HPP_
+#define VESC_DRIVER__VESC_INTERFACE_HPP_
+
+#include "vesc_driver/vesc_packet.h"
 
 #include <exception>
 #include <functional>
@@ -34,8 +39,6 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
-
-#include "vesc_driver/vesc_packet.h"
 
 namespace vesc_driver
 {
@@ -46,8 +49,8 @@ namespace vesc_driver
 class VescInterface
 {
 public:
-  typedef std::function<void (const VescPacketConstPtr&)> PacketHandlerFunction;
-  typedef std::function<void (const std::string&)> ErrorHandlerFunction;
+  typedef std::function<void (const VescPacketConstPtr &)> PacketHandlerFunction;
+  typedef std::function<void (const std::string &)> ErrorHandlerFunction;
 
   /**
    * Creates a VescInterface object. Opens the serial port interface to the VESC if @p port is not
@@ -60,9 +63,10 @@ public:
    *
    * @throw SerialException
    */
-  VescInterface(const std::string& port = std::string(),
-                const PacketHandlerFunction& packet_handler = PacketHandlerFunction(),
-                const ErrorHandlerFunction& error_handler = ErrorHandlerFunction());
+  VescInterface(
+    const std::string & port = std::string(),
+    const PacketHandlerFunction & packet_handler = PacketHandlerFunction(),
+    const ErrorHandlerFunction & error_handler = ErrorHandlerFunction());
 
   /**
    * Delete copy constructor and equals operator.
@@ -78,20 +82,20 @@ public:
   /**
    * Sets / updates the function that this class calls when a VESC packet is received.
    */
-  void setPacketHandler(const PacketHandlerFunction& handler);
+  void setPacketHandler(const PacketHandlerFunction & handler);
 
   /**
    * Sets / updates the function that this class calls when an error is detected, such as a bad
    * checksum.
    */
-  void setErrorHandler(const ErrorHandlerFunction& handler);
+  void setErrorHandler(const ErrorHandlerFunction & handler);
 
   /**
    * Opens the serial port interface to the VESC.
    *
    * @throw SerialException
    */
-  void connect(const std::string& port);
+  void connect(const std::string & port);
 
   /**
    * Closes the serial port interface to the VESC.
@@ -108,10 +112,12 @@ public:
   /**
    * Send a VESC packet.
    */
-  void send(const VescPacket& packet);
+  void send(const VescPacket & packet);
 
   void requestFWVersion();
   void requestState();
+  void requestImuData();
+
   void setDutyCycle(double duty_cycle);
   void setCurrent(double current);
   void setBrake(double brake);
@@ -129,18 +135,20 @@ private:
 class SerialException : public std::exception
 {
   // Disable copy constructors
-  SerialException& operator=(const SerialException&);
+  SerialException & operator=(const SerialException &);
   std::string e_what_;
+
 public:
-  explicit SerialException(const char *description)
+  explicit SerialException(const char * description)
   {
     std::stringstream ss;
     ss << "SerialException " << description << " failed.";
     e_what_ = ss.str();
   }
-  SerialException(const SerialException& other) : e_what_(other.e_what_) {}
+  SerialException(const SerialException & other)
+  : e_what_(other.e_what_) {}
   virtual ~SerialException() throw() {}
-  virtual const char* what() const throw()
+  virtual const char * what() const throw()
   {
     return e_what_.c_str();
   }
@@ -148,4 +156,4 @@ public:
 
 }  // namespace vesc_driver
 
-#endif  // VESC_DRIVER_VESC_INTERFACE_H_
+#endif  // VESC_DRIVER__VESC_INTERFACE_HPP_
