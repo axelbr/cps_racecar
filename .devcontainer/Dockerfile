@@ -29,6 +29,7 @@ RUN apt-get update && apt-get install -y \
   ros-${DISTRO}-xacro \
   ros-${DISTRO}-ros2-control \
   ros-${DISTRO}-ros2-controllers \
+  ros-${DISTRO}-rviz2 \
   libglvnd0 \
   libgl1 \
   libglx0 \

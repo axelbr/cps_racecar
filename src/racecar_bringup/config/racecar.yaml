@@ -1,0 +1,4 @@
+urg_node:
+  ros__parameters:
+    ip_address: "192.168.0.10"
+    laser_frame_id: "laser_link"

@@ -34,7 +34,7 @@ endif()
 #xacro_add_files(${xacro_files} TARGET media_files)
 
 install(DIRECTORY
-  meshes rviz urdf launch
+  meshes urdf launch
   DESTINATION share/${PROJECT_NAME}
 )
 

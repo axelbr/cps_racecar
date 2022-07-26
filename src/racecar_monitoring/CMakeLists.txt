@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(racecar_bringup)
+project(racecar_monitoring)
 
 # Default to C99
 if(NOT CMAKE_C_STANDARD)
@@ -34,7 +34,6 @@ endif()
 
 install(DIRECTORY
   launch
-  config
   rviz
   DESTINATION share/${PROJECT_NAME}
 )
