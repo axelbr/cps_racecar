@@ -169,7 +169,7 @@ hardware_interface::return_type VescInterface::read(const rclcpp::Time& /*time*/
 hardware_interface::return_type racecar_hardware::VescInterface::write(const rclcpp::Time& /*time*/,
                                                                        const rclcpp::Duration& /*period*/)
 {
-  double rpm =  target_velocity_ * erpm_gain_ + erpm_offset_;
+  double rpm = target_velocity_ * erpm_gain_ + erpm_offset_;
   double servo = target_steering_angle_ * servo_gain_ + servo_offset_;
   vesc_.setSpeed(rpm);
   vesc_.setServo(servo);

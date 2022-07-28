@@ -28,7 +28,8 @@ struct FirmwareVersion
   int minor;
 };
 
-struct State {
+struct State
+{
   double velocity;
   double steering_angle;
 };
@@ -53,7 +54,7 @@ private:
   std::string hw_port_;
   double erpm_gain_, erpm_offset_, servo_gain_, servo_offset_;
   vesc_driver::VescInterface vesc_;
-  
+
   double target_velocity_, target_steering_angle_;
   racecar_hardware::State state_;
 

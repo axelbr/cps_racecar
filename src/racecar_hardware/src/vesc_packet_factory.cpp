@@ -52,21 +52,24 @@ void VescPacketFactory::registerPacketType(int payload_id, CreateFn fn)
 }
 
 /** Helper function for when createPacket can not create a packet */
-VescPacketPtr createFailed(int* p_num_bytes_needed, std::string* p_what,
-                           const std::string& what, int num_bytes_needed = 0)
+VescPacketPtr createFailed(int* p_num_bytes_needed, std::string* p_what, const std::string& what,
+                           int num_bytes_needed = 0)
 {
-  if (p_num_bytes_needed != NULL) *p_num_bytes_needed = num_bytes_needed;
-  if (p_what != NULL) *p_what = what;
+  if (p_num_bytes_needed != NULL)
+    *p_num_bytes_needed = num_bytes_needed;
+  if (p_what != NULL)
+    *p_what = what;
   return VescPacketPtr();
 }
 
-VescPacketPtr VescPacketFactory::createPacket(const Buffer::const_iterator& begin,
-    const Buffer::const_iterator& end,
-    int* num_bytes_needed, std::string* what)
+VescPacketPtr VescPacketFactory::createPacket(const Buffer::const_iterator& begin, const Buffer::const_iterator& end,
+                                              int* num_bytes_needed, std::string* what)
 {
   // initialize output variables
-  if (num_bytes_needed != NULL) *num_bytes_needed = 0;
-  if (what != NULL) what->clear();
+  if (num_bytes_needed != NULL)
+    *num_bytes_needed = 0;
+  if (what != NULL)
+    what->clear();
 
   // need at least VESC_MIN_FRAME_SIZE bytes in buffer
   int buffer_size(std::distance(begin, end));
@@ -75,8 +78,7 @@ VescPacketPtr VescPacketFactory::createPacket(const Buffer::const_iterator& begi
                         VescFrame::VESC_MIN_FRAME_SIZE - buffer_size);
 
   // buffer must begin with a start-of-frame
-  if (VescFrame::VESC_SOF_VAL_SMALL_FRAME != *begin &&
-      VescFrame::VESC_SOF_VAL_LARGE_FRAME != *begin)
+  if (VescFrame::VESC_SOF_VAL_SMALL_FRAME != *begin && VescFrame::VESC_SOF_VAL_LARGE_FRAME != *begin)
     return createFailed(num_bytes_needed, what, "Buffer must begin with start-of-frame character");
 
   // get a view of the payload
@@ -107,8 +109,7 @@ VescPacketPtr VescPacketFactory::createPacket(const Buffer::const_iterator& begi
   // do we have enough data in the buffer to complete the frame?
   int frame_size = std::distance(view_frame.first, view_frame.second);
   if (buffer_size < frame_size)
-    return createFailed(num_bytes_needed, what, "Buffer does not contain a complete frame",
-                        frame_size - buffer_size);
+    return createFailed(num_bytes_needed, what, "Buffer does not contain a complete frame", frame_size - buffer_size);
 
   // is the end-of-frame character valid?
   if (VescFrame::VESC_EOF_VAL != *iter_eof)
@@ -116,8 +117,8 @@ VescPacketPtr VescPacketFactory::createPacket(const Buffer::const_iterator& begi
 
   // is the crc valid?
   uint16_t crc = (static_cast<uint16_t>(*iter_crc) << 8) + *(iter_crc + 1);
-  if (crc != CRC::Calculate(
-    &(*view_payload.first), std::distance(view_payload.first, view_payload.second), VescFrame::CRC_TYPE))
+  if (crc != CRC::Calculate(&(*view_payload.first), std::distance(view_payload.first, view_payload.second),
+                            VescFrame::CRC_TYPE))
     return createFailed(num_bytes_needed, what, "Invalid checksum");
 
   // frame looks good, construct the raw frame
