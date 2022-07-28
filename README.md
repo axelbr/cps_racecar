@@ -1,7 +1,5 @@
-# CPS TU Wien Race Car
+# CPS TU Vienna Race Car
 
-Bringup command: 
+This is a ROS2-based software stack for controlling a [f1tenth](https://f1tenth.readthedocs.io/en/stable/) car.
 
-<code>ros2 launch nav2_bringup bringup_launch.py params_file:=./src/racecar_navigation/params/nav.yaml map:=./src/racecar_navigation/maps/room.yaml  slam:=True</code>
-
-RVIZ: <code>rviz2 -d src/racecar_navigation/rviz/navigation.rviz</code>
+Some parts of it build on top of the original [f1tenth_system](https://github.com/f1tenth/f1tenth_system).
