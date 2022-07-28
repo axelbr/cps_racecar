@@ -1,4 +1,4 @@
-# CPS TU Wien Race Car
+# CPS TU Vienna Race Car
 
 This is a ROS2-based software stack for controlling a [f1tenth](https://f1tenth.readthedocs.io/en/stable/) car.
 
