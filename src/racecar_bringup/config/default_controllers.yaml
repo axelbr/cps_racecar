@@ -1,0 +1,32 @@
+controller_manager:
+  ros__parameters:
+    update_rate: 100
+
+    forward_velocity_controller:
+      type: forward_command_controller/ForwardCommandController
+
+    forward_steering_controller:
+      type: forward_command_controller/ForwardCommandController
+
+    state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+
+
+forward_velocity_controller:
+  ros__parameters:
+    joints:
+      - engine
+    interface_name: velocity
+
+forward_steering_controller:
+  ros__parameters:
+    joints:
+      - servo
+    interface_name: position
+
+state_broadcaster:
+  ros__parameters:
+    joints:
+      - engine
+      - servo

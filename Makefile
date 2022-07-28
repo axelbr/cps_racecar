@@ -1,4 +1,4 @@
-.PHONY: build build-system-image build-host-image run-system-image run-host-image 
+.PHONY: build sync build-system-image build-system-dev-image run-system run-system-dev
 
 build: install-deps
 	colcon build
@@ -6,8 +6,23 @@ build: install-deps
 install-deps:
 	rosdep install --from-paths ./src/* -y
 
-build-system-image:
-	docker build -t cps_racecar/system:latest -f docker/dockerfiles/racecar_system.Dockerfile .
+sync:
+	rsync -av --filter "merge .rsyncignore" ./ racecar:~/Projects/cps_racecar
 
-run-system-image:
+build-system-image:
+	docker build -t cps_racecar/system:latest -f docker/racecar/racecar.Dockerfile .
+
+build-system-dev-image:
+	docker build -t cps_racecar/system:dev -f docker/racecar/racecar.dev.Dockerfile .
+
+run-system:
 	docker run --rm -it --gpus all --network host cps_racecar/system:latest
+
+run-system-dev:
+	docker run -it \
+	--name racecar_dev \
+	-v $(CURDIR):/workspace \
+	-w /workspace \
+	--device /dev/sensors/vesc:/dev/sensors/vesc \
+	--network host \
+	cps_racecar/system:dev bash

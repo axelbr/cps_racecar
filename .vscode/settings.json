@@ -98,11 +98,11 @@
         "--max-line-length=100"
     ],
     "C_Cpp.default.intelliSenseMode": "clang-x64",
-    "C_Cpp.formatting": "Disabled",
+    "C_Cpp.formatting": "Enabled",
     "uncrustify.useReplaceOption": true,
     "uncrustify.configPath.linux": "/opt/ros/foxy/lib/python3.8/site-packages/ament_uncrustify/configuration/ament_code_style.cfg",
     "[cpp]": {
-        "editor.defaultFormatter": "zachflower.uncrustify"
+        "editor.defaultFormatter": "ms-iot.vscode-ros"
     },
     "cSpell.words": [
         "RTPS",

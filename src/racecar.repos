@@ -1,10 +1,5 @@
 repositories:
-  teb_local_planner:
+  vesc:
     type: git
-    url: https://github.com/rst-tu-dortmund/teb_local_planner.git
-    version: foxy-devel
-
-  costmap_converter:
-    type: git
-    url: https://github.com/rst-tu-dortmund/costmap_converter.git
-    version: ros2
+    url: https://github.com/f1tenth/vesc
+    version: 1952e799110f5c4eed82c68a6172bfcafd9998ac #ros2

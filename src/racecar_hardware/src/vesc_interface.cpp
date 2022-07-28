@@ -44,6 +44,7 @@
 #include "vesc_driver/vesc_packet_factory.h"
 #include "serial_driver/serial_driver.hpp"
 
+
 namespace vesc_driver
 {
 
@@ -51,7 +52,7 @@ class VescInterface::Impl
 {
 public:
   Impl()
-  : owned_ctx{new IoContext(2)},
+  : owned_ctx{new drivers::common::IoContext(2)},
     serial_driver_{new drivers::serial_driver::SerialDriver(*owned_ctx)}
   {}
   void packet_creation_thread();
@@ -64,7 +65,7 @@ public:
   ErrorHandlerFunction error_handler_;
   std::unique_ptr<drivers::serial_driver::SerialPortConfig> device_config_;
   std::string device_name_;
-  std::unique_ptr<IoContext> owned_ctx{};
+  std::unique_ptr<drivers::common::IoContext> owned_ctx{};
   std::unique_ptr<drivers::serial_driver::SerialDriver> serial_driver_;
 
   ~Impl()

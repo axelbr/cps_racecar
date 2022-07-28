@@ -45,7 +45,7 @@
   <xacro:macro name="chassis_geometry">
     <origin xyz="0.46 -0.135 -0.180" rpy="1.57 0 3.14" />
     <geometry>
-      <mesh filename="file://$(find racecar_description)/meshes/chassis.stl" scale="0.000990 0.0009375 0.0009375"/>
+      <mesh filename="package://racecar_description/meshes/chassis.stl" scale="0.000990 0.0009375 0.0009375"/>
     </geometry>
   </xacro:macro>
 
@@ -53,42 +53,42 @@
   <xacro:macro name="left_rear_wheel_geometry">
     <origin xyz="0 0 0" rpy="0 0 0" />
     <geometry>
-      <mesh filename="file://$(find racecar_description)/meshes/left_wheel.stl" />
+      <mesh filename="package://racecar_description/meshes/left_wheel.stl" />
     </geometry>
   </xacro:macro>
 
   <xacro:macro name="right_rear_wheel_geometry">
     <origin xyz="0 0 0" rpy="0 0 0" />
     <geometry>
-      <mesh filename="file://$(find racecar_description)/meshes/right_wheel.stl" />
+      <mesh filename="package://racecar_description/meshes/right_wheel.stl" />
     </geometry>
   </xacro:macro>
 
   <xacro:macro name="left_front_wheel_geometry">
     <origin xyz="0 0 0" rpy="0 0 0" />
     <geometry>
-      <mesh filename="file://$(find racecar_description)/meshes/left_wheel.stl" />
+      <mesh filename="package://racecar_description/meshes/left_wheel.stl" />
     </geometry>
   </xacro:macro>
 
   <xacro:macro name="right_front_wheel_geometry">
     <origin xyz="0 0 0" rpy="0 0 0" />
     <geometry>
-      <mesh filename="file://$(find racecar_description)/meshes/right_wheel.stl" />
+      <mesh filename="package://racecar_description/meshes/right_wheel.stl" />
     </geometry>
   </xacro:macro>
 
   <xacro:macro name="left_steering_hinge_geometry">
     <origin xyz="0 0 0" rpy="0 0 0" />
     <geometry>
-      <mesh filename="file://$(find racecar_description)/meshes/hinge.stl" />
+      <mesh filename="package://racecar_description/meshes/hinge.stl" />
     </geometry>
   </xacro:macro>
 
   <xacro:macro name="right_steering_hinge_geometry">
     <origin xyz="0 0 0" rpy="0 0 0" />
     <geometry>
-      <mesh filename="file://$(find racecar_description)/meshes/hinge.stl" />
+      <mesh filename="package://racecar_description/meshes/hinge.stl" />
     </geometry>
   </xacro:macro>
 
@@ -322,7 +322,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="file://$(find racecar_description)/meshes/hokuyo.stl"/>
+        <mesh filename="package://racecar_description/meshes/hokuyo.stl"/>
         <material name="grey" />
       </geometry>
     </visual>
@@ -381,7 +381,7 @@
     <axis xyz="0 0 1" />
   </joint>
 
-  <ros2_control name="GazeboSystem" type="system">
+  <!-- <ros2_control name="GazeboSystem" type="system">
     <hardware>
       <plugin>gazebo_ros2_control/GazeboSystem</plugin>
     </hardware>
@@ -393,6 +393,25 @@
       <state_interface name="position"/>
       <state_interface name="velocity"/>
       <state_interface name="effort"/>
+    </joint>
+  </ros2_control> -->
+
+  <ros2_control name="VescVelocityInterface" type="system">
+    <hardware>
+      <plugin>racecar_hardware/VescInterface</plugin>
+      <param name="vesc_port">/dev/sensors/vesc</param>
+      <param name="erpm_gain">4614.0</param>
+      <param name="erpm_offset">0.0</param>
+      <param name="servo_gain">-1.2135</param>
+      <param name="servo_offset">0.5304</param>
+    </hardware>
+    <joint name="engine">
+      <command_interface name="velocity" />
+      <state_interface name="velocity" />
+    </joint>
+    <joint name="servo">
+      <command_interface name="position" />
+      <state_interface name="position"/>
     </joint>
   </ros2_control>
 

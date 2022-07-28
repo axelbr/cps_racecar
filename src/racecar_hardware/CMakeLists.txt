@@ -16,6 +16,8 @@ find_package(hardware_interface REQUIRED)
 find_package(pluginlib REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_lifecycle REQUIRED)
+find_package(Threads)
+find_package(serial_driver)
 
 
 ## COMPILE
@@ -23,18 +25,24 @@ add_library(
   ${PROJECT_NAME}
   SHARED
   src/racecar_vesc_system_interface.cpp
+  src/vesc_interface.cpp
+  src/vesc_packet.cpp
+  src/vesc_packet_factory.cpp
 )
+
 target_include_directories(
   ${PROJECT_NAME}
   PRIVATE
   include
 )
+
 ament_target_dependencies(
   ${PROJECT_NAME}
   hardware_interface
   pluginlib
   rclcpp
   rclcpp_lifecycle
+  serial_driver
 )
 
 # Causes the visibility macros to use dllexport rather than dllimport,
