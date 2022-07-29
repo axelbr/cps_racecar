@@ -4,6 +4,7 @@ ARG DISTRO
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y \
   ssh \
+  rsync \
   bash-completion \
   build-essential \
   cmake \
@@ -36,7 +37,6 @@ RUN apt-get update && apt-get install -y \
   libegl1 \
   libxext6 \
   libx11-6 \
-  && rm -rf /var/lib/apt/lists/* \
   && rosdep init || echo "rosdep already initialized"
 
 

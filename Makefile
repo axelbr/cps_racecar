@@ -4,7 +4,7 @@ build: install-deps
 	colcon build
 
 install-deps:
-	rosdep install --from-paths ./src/* -y
+	rosdep install -y --from-paths src --ignore-src -r -y 
 
 sync:
 	rsync -av --filter "merge .rsyncignore" ./ racecar:~/Projects/cps_racecar

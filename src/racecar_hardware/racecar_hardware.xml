@@ -1,9 +1,9 @@
 <library path="racecar_hardware">
-  <class name="racecar_hardware/VescInterface"
-         type="racecar_hardware::VescInterface"
+  <class name="racecar_hardware/VescVelocityInterface"
+         type="racecar_hardware::VescVelocityInterface"
          base_class_type="hardware_interface::SystemInterface">
     <description>
-      VESC hardware abstraction.
+        Velocity control interface for the BLDC motor and position control interface to the servo through via VESC.
     </description>
   </class>
 </library>

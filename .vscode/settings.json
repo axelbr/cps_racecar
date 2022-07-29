@@ -105,9 +105,9 @@
         "editor.defaultFormatter": "ms-iot.vscode-ros"
     },
     "cSpell.words": [
-        "RTPS",
         "athackst",
         "autopep",
+        "bringup",
         "cmake",
         "cppcheck",
         "cpplint",
@@ -121,6 +121,7 @@
         "repos",
         "rosdistro",
         "rosidl",
+        "RTPS",
         "uncrustify",
         "xmllint"
     ],

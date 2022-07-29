@@ -26,4 +26,5 @@ RUN apt update && apt install -y \
   ros-${DISTRO}-urg-node \
   ros-${DISTRO}-joint-state-publisher \
   ros-${DISTRO}-serial-driver \
+RUN sed --in-place --expression '$isource "/workspace/install/setup.bash"' /ros_entrypoint.sh
 CMD [ "/bin/bash" ]

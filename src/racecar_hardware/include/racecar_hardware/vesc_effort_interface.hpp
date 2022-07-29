@@ -34,7 +34,7 @@ struct State
   double steering_angle;
 };
 
-class VescInterface : public hardware_interface::SystemInterface
+class VescLowLevelInterface : public hardware_interface::SystemInterface
 {
 public:
   hardware_interface::CallbackReturn on_init(const hardware_interface::HardwareInfo& info) override;

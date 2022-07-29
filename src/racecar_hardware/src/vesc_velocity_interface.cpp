@@ -1,4 +1,4 @@
-#include "racecar_hardware/racecar_vesc_system_interface.hpp"
+#include "racecar_hardware/vesc_velocity_interface.hpp"
 #include <chrono>
 #include <cmath>
 #include <limits>
@@ -15,7 +15,7 @@
 
 namespace racecar_hardware
 {
-hardware_interface::CallbackReturn VescInterface::on_init(const hardware_interface::HardwareInfo& info)
+hardware_interface::CallbackReturn VescVelocityInterface::on_init(const hardware_interface::HardwareInfo& info)
 {
   if (hardware_interface::SystemInterface::on_init(info) != hardware_interface::CallbackReturn::SUCCESS)
   {
@@ -32,7 +32,7 @@ hardware_interface::CallbackReturn VescInterface::on_init(const hardware_interfa
 
   if (info_.joints.size() != 2 or info_.joints[0].name != "engine" or info_.joints[1].name != "servo")
   {
-    RCLCPP_FATAL(rclcpp::get_logger("VescInterface"), "Expected 2 joints: [engine, servo]");
+    RCLCPP_FATAL(rclcpp::get_logger("VescVelocityInterface"), "Expected 2 joints: [engine, servo]");
     return hardware_interface::CallbackReturn::ERROR;
   }
 
@@ -47,12 +47,12 @@ hardware_interface::CallbackReturn VescInterface::on_init(const hardware_interfa
   return hardware_interface::CallbackReturn::SUCCESS;
 }
 
-bool VescInterface::check_motor_joint(const hardware_interface::ComponentInfo& motor_joint)
+bool VescVelocityInterface::check_motor_joint(const hardware_interface::ComponentInfo& motor_joint)
 {
   if (motor_joint.command_interfaces.size() != 1 or
       motor_joint.command_interfaces[0].name != hardware_interface::HW_IF_VELOCITY)
   {
-    RCLCPP_FATAL(rclcpp::get_logger("VescInterface"),
+    RCLCPP_FATAL(rclcpp::get_logger("VescVelocityInterface"),
                  "Expected 1 command interface \"velocity\" for joint "
                  "\"engine\".");
     return false;
@@ -61,33 +61,33 @@ bool VescInterface::check_motor_joint(const hardware_interface::ComponentInfo& m
   if (motor_joint.state_interfaces.size() != 1 or
       motor_joint.state_interfaces[0].name != hardware_interface::HW_IF_VELOCITY)
   {
-    RCLCPP_FATAL(rclcpp::get_logger("VescInterface"), "Expected 1 state interface \"velocity\" for joint \"engine\".");
+    RCLCPP_FATAL(rclcpp::get_logger("VescVelocityInterface"), "Expected 1 state interface \"velocity\" for joint \"engine\".");
     return false;
   }
 
   return true;
 }
 
-bool VescInterface::check_servo_joint(const hardware_interface::ComponentInfo& servo_joint)
+bool VescVelocityInterface::check_servo_joint(const hardware_interface::ComponentInfo& servo_joint)
 {
   if (servo_joint.command_interfaces.size() != 1 or
       servo_joint.command_interfaces[0].name != hardware_interface::HW_IF_POSITION)
   {
-    RCLCPP_FATAL(rclcpp::get_logger("VescInterface"), "Expected 1 command interface \"position\" for joint \"servo\".");
+    RCLCPP_FATAL(rclcpp::get_logger("VescVelocityInterface"), "Expected 1 command interface \"position\" for joint \"servo\".");
     return false;
   }
 
   if (servo_joint.state_interfaces.size() != 1 or
       servo_joint.state_interfaces[0].name != hardware_interface::HW_IF_POSITION)
   {
-    RCLCPP_FATAL(rclcpp::get_logger("VescInterface"), "Expected 1 state interface \"position\" for joint \"servo\".");
+    RCLCPP_FATAL(rclcpp::get_logger("VescVelocityInterface"), "Expected 1 state interface \"position\" for joint \"servo\".");
     return false;
   }
 
   return true;
 }
 
-void VescInterface::packet_callback(const std::shared_ptr<vesc_driver::VescPacket const>& packet)
+void VescVelocityInterface::packet_callback(const std::shared_ptr<vesc_driver::VescPacket const>& packet)
 {
   if (packet->name() == "Values")
   {
@@ -100,34 +100,34 @@ void VescInterface::packet_callback(const std::shared_ptr<vesc_driver::VescPacke
   }
 }
 
-void VescInterface::error_callback(const std::string& error)
+void VescVelocityInterface::error_callback(const std::string& error)
 {
-  RCLCPP_ERROR(rclcpp::get_logger("VescInterface"), "Received error from VESC: %s", error.c_str());
+  RCLCPP_ERROR(rclcpp::get_logger("VescVelocityInterface"), "Received error from VESC: %s", error.c_str());
 }
 
-std::vector<hardware_interface::StateInterface> VescInterface::export_state_interfaces()
+std::vector<hardware_interface::StateInterface> VescVelocityInterface::export_state_interfaces()
 {
   std::vector<hardware_interface::StateInterface> state_interfaces;
   state_interfaces.emplace_back(
       hardware_interface::StateInterface("engine", hardware_interface::HW_IF_VELOCITY, &state_.velocity));
   state_interfaces.emplace_back(
       hardware_interface::StateInterface("servo", hardware_interface::HW_IF_POSITION, &state_.steering_angle));
-  RCLCPP_INFO(rclcpp::get_logger("VescInterface"), "Exporting state interfaces.");
+  RCLCPP_INFO(rclcpp::get_logger("VescVelocityInterface"), "Exporting state interfaces.");
   return state_interfaces;
 }
 
-std::vector<hardware_interface::CommandInterface> VescInterface::export_command_interfaces()
+std::vector<hardware_interface::CommandInterface> VescVelocityInterface::export_command_interfaces()
 {
   std::vector<hardware_interface::CommandInterface> command_interfaces;
   command_interfaces.emplace_back(
       hardware_interface::CommandInterface("engine", hardware_interface::HW_IF_VELOCITY, &target_velocity_));
   command_interfaces.emplace_back(
       hardware_interface::CommandInterface("servo", hardware_interface::HW_IF_POSITION, &target_steering_angle_));
-  RCLCPP_INFO(rclcpp::get_logger("VescInterface"), "Exporting command interfaces.");
+  RCLCPP_INFO(rclcpp::get_logger("VescVelocityInterface"), "Exporting command interfaces.");
   return command_interfaces;
 }
 
-hardware_interface::CallbackReturn VescInterface::on_activate(const rclcpp_lifecycle::State& /*previous_state*/)
+hardware_interface::CallbackReturn VescVelocityInterface::on_activate(const rclcpp_lifecycle::State& /*previous_state*/)
 {
   try
   {
@@ -138,25 +138,25 @@ hardware_interface::CallbackReturn VescInterface::on_activate(const rclcpp_lifec
   }
   catch (std::exception& e)
   {
-    RCLCPP_FATAL(rclcpp::get_logger("VescInterface"), "Failed to connect to the VESC: %s.", e.what());
+    RCLCPP_FATAL(rclcpp::get_logger("VescVelocityInterface"), "Failed to connect to the VESC: %s.", e.what());
     return hardware_interface::CallbackReturn::ERROR;
   }
-  RCLCPP_INFO(rclcpp::get_logger("VescInterface"), "Successfully connected to VESC.");
+  RCLCPP_INFO(rclcpp::get_logger("VescVelocityInterface"), "Successfully connected to VESC.");
   return hardware_interface::CallbackReturn::SUCCESS;
 }
 
-hardware_interface::CallbackReturn VescInterface::on_deactivate(const rclcpp_lifecycle::State& /*previous_state*/)
+hardware_interface::CallbackReturn VescVelocityInterface::on_deactivate(const rclcpp_lifecycle::State& /*previous_state*/)
 {
   vesc_.disconnect();
   return hardware_interface::CallbackReturn::SUCCESS;
 }
 
-hardware_interface::return_type VescInterface::read(const rclcpp::Time& /*time*/, const rclcpp::Duration& /*period*/)
+hardware_interface::return_type VescVelocityInterface::read(const rclcpp::Time& /*time*/, const rclcpp::Duration& /*period*/)
 {
   vesc_.requestState();
   if (not vesc_values_)
   {
-    RCLCPP_WARN(rclcpp::get_logger("VescInterface"), "VESC packet was empty.");
+    RCLCPP_WARN(rclcpp::get_logger("VescVelocityInterface"), "VESC packet was empty.");
     return hardware_interface::return_type::OK;
   }
 
@@ -166,7 +166,7 @@ hardware_interface::return_type VescInterface::read(const rclcpp::Time& /*time*/
   return hardware_interface::return_type::OK;
 }
 
-hardware_interface::return_type racecar_hardware::VescInterface::write(const rclcpp::Time& /*time*/,
+hardware_interface::return_type racecar_hardware::VescVelocityInterface::write(const rclcpp::Time& /*time*/,
                                                                        const rclcpp::Duration& /*period*/)
 {
   double rpm = target_velocity_ * erpm_gain_ + erpm_offset_;
@@ -179,4 +179,4 @@ hardware_interface::return_type racecar_hardware::VescInterface::write(const rcl
 }  // namespace racecar_hardware
 
 #include "pluginlib/class_list_macros.hpp"
-PLUGINLIB_EXPORT_CLASS(racecar_hardware::VescInterface, hardware_interface::SystemInterface)
+PLUGINLIB_EXPORT_CLASS(racecar_hardware::VescVelocityInterface, hardware_interface::SystemInterface)

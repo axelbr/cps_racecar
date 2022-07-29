@@ -2,7 +2,7 @@
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
     <ros2_control name="VescVelocityInterface" type="system">
         <hardware>
-            <plugin>racecar_hardware/VescInterface</plugin>
+            <plugin>racecar_hardware/VescVelocityInterface</plugin>
             <param name="vesc_port">/dev/sensors/vesc</param>
             <param name="erpm_gain">4614.0</param>
             <param name="erpm_offset">0.0</param>
