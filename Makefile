@@ -24,5 +24,6 @@ run-system-dev:
 	-v $(CURDIR):/workspace \
 	-w /workspace \
 	--device /dev/sensors/vesc:/dev/sensors/vesc \
+	--device /dev/input/js0:/dev/input/js0 \
 	--network host \
 	cps_racecar/system:dev bash

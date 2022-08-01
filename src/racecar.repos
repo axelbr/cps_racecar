@@ -1,5 +1,5 @@
 repositories:
-  vesc:
+  razor_imu:
     type: git
-    url: https://github.com/f1tenth/vesc
-    version: 1952e799110f5c4eed82c68a6172bfcafd9998ac #ros2
+    url: https://github.com/Triton-AI/ros2_razor_imu.git
+    version: ros2

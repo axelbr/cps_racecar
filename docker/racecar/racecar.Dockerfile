@@ -35,5 +35,6 @@ RUN . /opt/ros/$ROS_DISTRO/setup.sh && colcon build --symlink-install --mixin $O
 # source entrypoint setup
 ENV OVERLAY_WS $OVERLAY_WS
 RUN sed --in-place --expression '$isource "$OVERLAY_WS/install/setup.bash"' /ros_entrypoint.sh
+RUN chmod a+rw /dev/input/js0 
 
 CMD ["ros2", "launch", "racecar_bringup", "system.launch.py"]

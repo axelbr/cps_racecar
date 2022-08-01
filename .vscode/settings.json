@@ -88,7 +88,7 @@
     },
     // Autocomplete from ros python packages
     "python.autoComplete.extraPaths": [
-        "/opt/ros/foxy/lib/python3.8/site-packages/"
+        "/opt/ros/${localEnv:ROS_DISTRO}/lib/python3.10/site-packages/"
     ],
     // Environment file lets vscode find python files within workspace
     "python.envFile": "${workspaceFolder}/.env",
@@ -100,7 +100,7 @@
     "C_Cpp.default.intelliSenseMode": "clang-x64",
     "C_Cpp.formatting": "Enabled",
     "uncrustify.useReplaceOption": true,
-    "uncrustify.configPath.linux": "/opt/ros/foxy/lib/python3.8/site-packages/ament_uncrustify/configuration/ament_code_style.cfg",
+    "uncrustify.configPath.linux": "/opt/ros/${localEnv:ROS_DISTRO}/lib/python3.10/site-packages/ament_uncrustify/configuration/ament_code_style.cfg",
     "[cpp]": {
         "editor.defaultFormatter": "ms-iot.vscode-ros"
     },
@@ -134,7 +134,7 @@
         "**/log": true
     },
     "python.analysis.extraPaths": [
-        "/opt/ros/foxy/lib/python3.8/site-packages/"
+        "/opt/ros/${localEnv:ROS_DISTRO}/lib/python3.10/site-packages/"
     ],
     "cSpell.allowCompoundWords": true,
     "cSpell.ignorePaths": [
@@ -148,5 +148,12 @@
     ],
     "[xml]": {
         "editor.defaultFormatter": "DotJoshJohnson.xml"
+    },
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.python"
+    },
+    "python.formatting.provider": "autopep8",
+    "[yaml]": {
+        "editor.defaultFormatter": "redhat.vscode-yaml"
     }
 }

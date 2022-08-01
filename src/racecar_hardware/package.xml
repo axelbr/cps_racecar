@@ -16,7 +16,7 @@
   <depend>rclcpp</depend>
   <depend>rclcpp_lifecycle</depend>
   <depend>ros2_control</depend>
-  <depend>serial-driver</depend>
+  <depend>serial_driver</depend>
 
   <test_depend>ament_cmake_gtest</test_depend>
 

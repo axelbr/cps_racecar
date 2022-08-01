@@ -17,6 +17,7 @@ def generate_launch_description():
 
     sensor_config = os.path.join(bringup_pkg, 'config', 'sensors.yaml')
     controller_config = os.path.join(bringup_pkg, 'config', 'controllers.yaml')
+    teleop_config = os.path.join(bringup_pkg, 'config', 'teleop.yaml')
     urdf_model_path = os.path.join(description_pkg, 'urdf', 'racecar.urdf.xacro')
   
     description_launch = IncludeLaunchDescription(
@@ -41,8 +42,16 @@ def generate_launch_description():
         }.items()
     )
 
+    teleop_launch = IncludeLaunchDescription(
+        launch_description_source=PythonLaunchDescriptionSource(os.path.join(bringup_pkg, 'launch', 'teleop.launch.py')),
+        launch_arguments={
+            'teleop_config': teleop_config
+        }.items()
+    )
+
     return LaunchDescription([
         description_launch,
         sensors_launch,
-        controllers_launch
+        controllers_launch,
+        teleop_launch
     ])
