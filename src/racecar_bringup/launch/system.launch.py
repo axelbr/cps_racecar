@@ -23,14 +23,14 @@ def generate_launch_description():
         launch_description_source=PythonLaunchDescriptionSource(os.path.join(description_pkg, 'launch', 'description.launch.py')),
         launch_arguments={
             'model': urdf_model_path
-        }
+        }.items()
     )
 
     sensors_launch = IncludeLaunchDescription(
         launch_description_source=PythonLaunchDescriptionSource(os.path.join(bringup_pkg, 'launch', 'sensors.launch.py')),
         launch_arguments={
             'sensor_config': sensor_config
-        }
+        }.items()
     )
 
     controllers_launch = IncludeLaunchDescription(
@@ -38,7 +38,7 @@ def generate_launch_description():
         launch_arguments={
             'controller_config': controller_config,
             'model': urdf_model_path
-        }
+        }.items()
     )
 
     return LaunchDescription([
