@@ -18,6 +18,13 @@ def generate_launch_description():
         output='screen',
         arguments=['-d', LaunchConfiguration('rvizconfig')],
     )
+    
+    plotter = Node(
+        package='plotjuggler',
+        executable='plotjuggler',
+        name='plotjuggler',
+        output='screen'
+    )
 
     joint_state_publisher_gui_node = Node(
         package='joint_state_publisher_gui',
@@ -31,5 +38,6 @@ def generate_launch_description():
        DeclareLaunchArgument(name='rvizconfig', default_value=default_rviz_config, description='Absolute path to rviz config file'),
        DeclareLaunchArgument(name='rqt_gui', default_value='False', description='Flag to enable joint_state_publisher_gui'),
        rviz_node,
-       joint_state_publisher_gui_node
+       joint_state_publisher_gui_node,
+       plotter
     ])

@@ -1,9 +1,10 @@
-#ifndef RACECAR_HARDWARE__RACECAR_VESC_INTERFACE_HPP_
-#define RACECAR_HARDWARE__RACECAR_VESC_INTERFACE_HPP_
+#ifndef RACECAR_HARDWARE__RACECAR_VESC_HARDWARE_INTERFACE_HPP_
+#define RACECAR_HARDWARE__RACECAR_VESC_HARDWARE_INTERFACE_HPP_
 
 #include <memory>
 #include <string>
 #include <vector>
+#include <map>
 
 #include "hardware_interface/handle.hpp"
 #include "hardware_interface/hardware_info.hpp"
@@ -28,15 +29,33 @@ struct FirmwareVersion
   int minor;
 };
 
-struct State
+struct VescPacketData
 {
-  double velocity;
-  double steering_angle;
+  std::shared_ptr<vesc_driver::VescPacketImu const> imu_data;
+  std::shared_ptr<vesc_driver::VescPacketFWVersion const> firmware_data;
+  std::shared_ptr<vesc_driver::VescPacketValues const> motor_data;
 };
 
-class VescLowLevelInterface : public hardware_interface::SystemInterface
+struct VescConfig {
+  std::string hw_port;
+  double erpm_gain, erpm_offset, servo_gain, servo_offset;
+  bool activate_duty_cycle, activate_current, activate_erpm;
+};
+
+struct ControlInterface {
+  double value;
+  std::pair<double, double> limits;
+};
+
+class VescHardwareInterface : public hardware_interface::SystemInterface
 {
+
 public:
+
+  typedef std::map<std::string, std::map<std::string, ControlInterface>> VescControls;
+  typedef std::map<std::string, std::map<std::string, double>> VescStates;
+
+
   hardware_interface::CallbackReturn on_init(const hardware_interface::HardwareInfo& info) override;
   std::vector<hardware_interface::StateInterface> export_state_interfaces() override;
   std::vector<hardware_interface::CommandInterface> export_command_interfaces() override;
@@ -49,19 +68,19 @@ public:
 private:
   std::shared_ptr<vesc_driver::VescPacketImu const> imu_data_;
   std::shared_ptr<vesc_driver::VescPacketFWVersion const> firmware_data_;
-  std::shared_ptr<vesc_driver::VescPacketValues const> vesc_values_;
+  std::shared_ptr<vesc_driver::VescPacketValues const> motor_data_;
 
-  std::string hw_port_;
-  double erpm_gain_, erpm_offset_, servo_gain_, servo_offset_;
+  VescConfig config_;
+  VescControls controls_;
+  VescStates states_;
+  VescPacketData packet_data_;
   vesc_driver::VescInterface vesc_;
-
-  double target_velocity_, target_steering_angle_;
-  racecar_hardware::State state_;
 
   void packet_callback(const std::shared_ptr<vesc_driver::VescPacket const>& packet);
   void error_callback(const std::string& error);
-  bool check_servo_joint(const hardware_interface::ComponentInfo& servo_joint);
-  bool check_motor_joint(const hardware_interface::ComponentInfo& motor_joint);
+  void set_interface_fields(const hardware_interface::HardwareInfo& info);
+  bool check_drive_train_info(const hardware_interface::ComponentInfo& info);
+  bool check_steering_info(const hardware_interface::ComponentInfo& info);
 };
 
 }  // namespace racecar_hardware

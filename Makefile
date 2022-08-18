@@ -1,7 +1,7 @@
 .PHONY: build sync build-system-image build-system-dev-image run-system run-system-dev
 
 build: install-deps
-	colcon build
+	colcon build --symlink-install --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 
 install-deps:
 	rosdep install -y --from-paths src --ignore-src -r -y 

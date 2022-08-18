@@ -31,6 +31,7 @@ RUN apt-get update && apt-get install -y \
   ros-${DISTRO}-ros2-control \
   ros-${DISTRO}-ros2-controllers \
   ros-${DISTRO}-rviz2 \
+  ros-${DISTRO}-plotjuggler-ros \
   libglvnd0 \
   libgl1 \
   libglx0 \

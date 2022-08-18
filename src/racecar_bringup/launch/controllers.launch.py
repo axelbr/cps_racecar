@@ -34,17 +34,23 @@ def generate_launch_description():
     )
 
     # Spawns a controller for the hardware interface
-    robot_controller_spawner = Node(
+    drive_train_controller_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["forward_velocity_controller", "-c", "/controller_manager"],
+        arguments=["drive_train_controller", "-c", "/controller_manager"],
+    )
+
+    steering_controller_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["steering_controller", "-c", "/controller_manager"],
     )
     
     # Delays the launch of the controller until the broadcaster is spawned
     delay_robot_controller_spawner_after_joint_state_broadcaster_spawner = RegisterEventHandler(
         event_handler=OnProcessExit(
             target_action=joint_state_broadcaster_spawner,
-            on_exit=[robot_controller_spawner],
+            on_exit=[drive_train_controller_spawner, steering_controller_spawner],
         )
     )
 

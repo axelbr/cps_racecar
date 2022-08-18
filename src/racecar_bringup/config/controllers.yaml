@@ -2,10 +2,10 @@ controller_manager:
   ros__parameters:
     update_rate: 100
 
-    forward_velocity_controller:
-      type: forward_command_controller/ForwardCommandController
+    drive_train_controller:
+      type: forward_command_controller/MultiInterfaceForwardCommandController
 
-    forward_steering_controller:
+    steering_controller:
       type: forward_command_controller/ForwardCommandController
 
     joint_state_broadcaster:
@@ -13,15 +13,17 @@ controller_manager:
 
 
 
-forward_velocity_controller:
+drive_train_controller:
   ros__parameters:
-    joints:
-      - engine
-    interface_name: velocity
+    joint: drive_train
+    interface_names:
+      - erpm
+      - duty_cycle
+      - current
 
-forward_steering_controller:
+steering_controller:
   ros__parameters:
     joints:
-      - servo
-    interface_name: position
+      - steering
+    interface_name: angle
 

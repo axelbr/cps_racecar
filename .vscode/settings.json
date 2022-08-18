@@ -84,7 +84,8 @@
         "source_location": "cpp",
         "strstream": "cpp",
         "fstream": "cpp",
-        "cfenv": "cpp"
+        "cfenv": "cpp",
+        "*.ipp": "cpp"
     },
     // Autocomplete from ros python packages
     "python.autoComplete.extraPaths": [

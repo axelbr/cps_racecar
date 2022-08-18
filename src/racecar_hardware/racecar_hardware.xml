@@ -6,5 +6,12 @@
         Velocity control interface for the BLDC motor and position control interface to the servo through via VESC.
     </description>
   </class>
+  <class name="racecar_hardware/VescHardwareInterface"
+         type="racecar_hardware::VescHardwareInterface"
+         base_class_type="hardware_interface::SystemInterface">
+    <description>
+        VESC low-level hardware interface.
+    </description>
+  </class>
 </library>
 

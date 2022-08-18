@@ -24,6 +24,7 @@ find_package(serial_driver)
 add_library(
   ${PROJECT_NAME}
   SHARED
+  src/vesc_hardware_interface.cpp
   src/vesc_velocity_interface.cpp
   src/vesc_interface.cpp
   src/vesc_packet.cpp

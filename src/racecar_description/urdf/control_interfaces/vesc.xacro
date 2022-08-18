@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <ros2_control name="VescHardwareInterface" type="system">
+        <hardware>
+            <plugin>racecar_hardware/VescHardwareInterface</plugin>
+            <param name="vesc_port">/dev/sensors/vesc</param>
+            <param name="erpm_gain">4614.0</param>
+            <param name="erpm_offset">0.0</param>
+            <param name="servo_gain">-1.2135</param>
+            <param name="servo_offset">0.5304</param>
+            <param name="use_erpm">0</param>
+            <param name="use_duty_cycle">1</param>
+            <param name="use_current">1</param>
+        </hardware>
+        <joint name="drive_train">
+            <command_interface name="duty_cycle">
+                <param name="min">0.05</param>
+                <param name="max">0.95</param>
+            </command_interface>
+            <command_interface name="current">
+                <param name="min">-60</param>
+                <param name="max">60</param>
+            </command_interface>
+            <command_interface name="erpm">
+                <param name="min">0</param>
+                <param name="max">30000</param>
+            </command_interface>
+            <state_interface name="erpm" />
+            <state_interface name="velocity" />
+            <state_interface name="duty_cycle" />
+            <state_interface name="current_motor" />
+            <state_interface name="current_input" />
+            <state_interface name="voltage" />
+            <state_interface name="charged_drawn" />
+            <state_interface name="charged_regenerated" />
+            <state_interface name="displacement" />
+            <state_interface name="distance_travelled" />
+        </joint>
+        <joint name="steering">
+            <command_interface name="angle">
+                <param name="min">-0.42</param>
+                <param name="max">0.42</param>
+            </command_interface>
+            <state_interface name="angle"/>
+        </joint>
+        <sensor name="gyroscope">
+            <state_interface name="yaw"/>
+            <state_interface name="pitch"/>
+            <state_interface name="roll"/>
+            <state_interface name="x"/>
+            <state_interface name="y"/>
+            <state_interface name="z"/>
+            <state_interface name="q.x"/>
+            <state_interface name="q.y"/>
+            <state_interface name="q.z"/>
+            <state_interface name="q.w"/>
+        </sensor>
+        <sensor name="accelerometer">
+            <state_interface name="x"/>
+            <state_interface name="y"/>
+            <state_interface name="z"/>
+        </sensor>
+        <sensor name="magnetometer">
+            <state_interface name="x"/>
+            <state_interface name="y"/>
+            <state_interface name="z"/>
+        </sensor>
+    </ros2_control>
+</robot>
