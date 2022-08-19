@@ -12,7 +12,7 @@
             <param name="use_duty_cycle">1</param>
             <param name="use_current">1</param>
         </hardware>
-        <joint name="drive_train">
+        <joint name="motor">
             <command_interface name="duty_cycle">
                 <param name="min">0.05</param>
                 <param name="max">0.95</param>

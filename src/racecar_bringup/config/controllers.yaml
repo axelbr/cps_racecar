@@ -2,7 +2,7 @@ controller_manager:
   ros__parameters:
     update_rate: 100
 
-    drive_train_controller:
+    motor_controller:
       type: forward_command_controller/MultiInterfaceForwardCommandController
 
     steering_controller:
@@ -13,9 +13,9 @@ controller_manager:
 
 
 
-drive_train_controller:
+motor_controller:
   ros__parameters:
-    joint: drive_train
+    joint: motor
     interface_names:
       - erpm
       - duty_cycle
