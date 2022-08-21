@@ -37,7 +37,7 @@ def generate_launch_description():
     drive_train_controller_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["drive_train_controller", "-c", "/controller_manager"],
+        arguments=["effort_drive_train_controller", "-c", "/controller_manager"],
     )
 
     steering_controller_spawner = Node(
@@ -50,7 +50,7 @@ def generate_launch_description():
     delay_robot_controller_spawner_after_joint_state_broadcaster_spawner = RegisterEventHandler(
         event_handler=OnProcessExit(
             target_action=joint_state_broadcaster_spawner,
-            on_exit=[drive_train_controller_spawner, steering_controller_spawner],
+            on_exit=[drive_train_controller_spawner],
         )
     )
 

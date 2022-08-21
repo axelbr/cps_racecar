@@ -9,6 +9,9 @@ import os
 
 def generate_launch_description():
 
+    bringup_pkg = FindPackageShare(package='racecar_bringup').find('racecar_bringup')
+    config = os.path.join(bringup_pkg, 'config', 'teleop.yaml')
+
     joy_node = Node(
         package='joy_linux',
         executable='joy_linux_node',
@@ -24,7 +27,7 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
-        DeclareLaunchArgument('teleop_config', default_value='', description='Teleop configuration file.'),
+        DeclareLaunchArgument('teleop_config', default_value=config, description='Teleop configuration file.'),
         joy_node,
         joy_teleop_node
     ])

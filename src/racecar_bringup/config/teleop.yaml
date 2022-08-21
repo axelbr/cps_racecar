@@ -4,7 +4,6 @@ joy_linux:
     
 joy_teleop:
   ros__parameters:
-
     default:
       type: topic
       interface_type: std_msgs/msg/Float64MultiArray
@@ -12,13 +11,13 @@ joy_teleop:
       deadman_buttons: [4]
       axis_mappings:
         data:
-          speed:
+          0: 
             axis: 1
-            scale: 5.0
+            scale: 1.0
             offset: 0.0
-          steering:
+          1:
             axis: 3
-            scale: 0.34
+            scale: 1.0
             offset: 0.0
 
   

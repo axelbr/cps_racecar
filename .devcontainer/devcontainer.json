@@ -19,7 +19,6 @@
 		"--volume=/tmp/.X11-unix:/tmp/.X11-unix",
 		"--volume=/home/${localEnv:USER}/.ssh/racecar_id:/home/${localEnv:USER}/.ssh/racecar_id",
 		"--volume=/home/${localEnv:USER}/.ssh/config:/home/${localEnv:USER}/.ssh/config"
-
 	],
 	"containerEnv": { "DISPLAY": "${localEnv:DISPLAY}" },
 	// Set *default* container specific settings.json values on container create.

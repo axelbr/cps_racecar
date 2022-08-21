@@ -9,7 +9,7 @@
             <param name="servo_gain">-1.2135</param>
             <param name="servo_offset">0.5304</param>
             <param name="use_erpm">0</param>
-            <param name="use_duty_cycle">1</param>
+            <param name="use_duty_cycle">0</param>
             <param name="use_current">1</param>
         </hardware>
         <joint name="drive_train">

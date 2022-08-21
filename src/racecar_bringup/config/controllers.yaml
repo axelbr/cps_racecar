@@ -2,28 +2,12 @@ controller_manager:
   ros__parameters:
     update_rate: 100
 
-    drive_train_controller:
-      type: forward_command_controller/MultiInterfaceForwardCommandController
-
-    steering_controller:
-      type: forward_command_controller/ForwardCommandController
+    teleop_controller:
+      type: racecar_controllers/TeleopController
 
     joint_state_broadcaster:
       type: joint_state_broadcaster/JointStateBroadcaster
 
-
-
-drive_train_controller:
+teleop_controller:
   ros__parameters:
-    joint: drive_train
-    interface_names:
-      - erpm
-      - duty_cycle
-      - current
-
-steering_controller:
-  ros__parameters:
-    joints:
-      - steering
-    interface_name: angle
-
+    drive_train_command: "current"

@@ -1,0 +1,7 @@
+<library path="racecar_controllers">
+  <class name="racecar_controllers/TeleopController" type="racecar_controllers::TeleopController" base_class_type="controller_interface::ControllerInterface">
+    <description>
+      Controller that listens on joystick commands. Just for debugging.
+    </description>
+  </class>
+</library>
