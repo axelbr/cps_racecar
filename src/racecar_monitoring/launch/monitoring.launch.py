@@ -1,3 +1,4 @@
+from ast import arg
 from launch import LaunchDescription, conditions
 from launch.actions import DeclareLaunchArgument
 from launch_ros.substitutions import FindPackageShare
@@ -23,7 +24,8 @@ def generate_launch_description():
         package='plotjuggler',
         executable='plotjuggler',
         name='plotjuggler',
-        output='screen'
+        output='screen',
+        arguments=["-l", os.path.join(pkg_share, "config", "plots.xml")]
     )
 
     joint_state_publisher_gui_node = Node(

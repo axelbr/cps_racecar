@@ -23,9 +23,11 @@ namespace racecar_controllers
       auto drive_train_command = this->get_node()->get_parameter("drive_train_command").as_string();
       if (drive_train_command == "current")
       {
-        this->effort = std::abs(msg.axes[1]) * 30.0;
+        this->effort = msg.axes[1] * 60.0;
       }
-      else
+      else if (drive_train_command == "duty_cycle") {
+        this->effort = msg.axes[1];
+      } else
       {
         this->effort = msg.axes[1] * 30000.0;
       }
@@ -43,7 +45,7 @@ namespace racecar_controllers
     auto drive_train_command = get_node()->get_parameter("drive_train_command").as_string();
     controller_interface::InterfaceConfiguration command_interfaces_config;
     command_interfaces_config.type = controller_interface::interface_configuration_type::INDIVIDUAL;
-    command_interfaces_config.names = {"drive_train/" + drive_train_command, "steering/angle"};
+    command_interfaces_config.names = {"motor/" + drive_train_command, "steering/angle"};
     return command_interfaces_config;
   }
 
