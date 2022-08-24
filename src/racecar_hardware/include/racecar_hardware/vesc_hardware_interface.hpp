@@ -43,8 +43,19 @@ struct VescConfig {
 };
 
 struct ControlInterface {
-  double value;
-  std::pair<double, double> limits;
+  public:
+    double min, max, value;
+    double clamped_value() const {
+      return std::clamp(value, this->min, this->max);
+    }
+  private:
+      
+};
+
+enum MotorCommandType {
+  CURRENT,
+  DUTY_CYCLE,
+  ERPM
 };
 
 class VescHardwareInterface : public hardware_interface::SystemInterface
@@ -75,11 +86,17 @@ private:
   VescStates states_;
   VescPacketData packet_data_;
   vesc_driver::VescInterface vesc_;
+  MotorCommandType command_type_;
+  std::unordered_map<std::string, MotorCommandType> command_types = {
+    {"current", MotorCommandType::CURRENT},
+    {"duty_cycle", MotorCommandType::DUTY_CYCLE},
+    {"erpm", MotorCommandType::ERPM}
+  };
 
   void packet_callback(const std::shared_ptr<vesc_driver::VescPacket const>& packet);
   void error_callback(const std::string& error);
   void set_interface_fields(const hardware_interface::HardwareInfo& info);
-  bool check_drive_train_info(const hardware_interface::ComponentInfo& info);
+  bool check_motor_info(const hardware_interface::ComponentInfo& info);
   bool check_steering_info(const hardware_interface::ComponentInfo& info);
 };
 

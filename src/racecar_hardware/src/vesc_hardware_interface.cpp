@@ -28,20 +28,18 @@ namespace racecar_hardware
     config_.erpm_offset = std::stod(info_.hardware_parameters["erpm_offset"]);
     config_.servo_gain = std::stod(info_.hardware_parameters["servo_gain"]);
     config_.servo_offset = std::stod(info_.hardware_parameters["servo_offset"]);
-    config_.activate_current = std::stoi(info_.hardware_parameters["use_current"]);
-    config_.activate_duty_cycle = std::stoi(info_.hardware_parameters["use_duty_cycle"]);
-    config_.activate_erpm = std::stoi(info_.hardware_parameters["use_erpm"]);
 
     // Check joint and component info
     if (info.joints.size() != 2)
     {
-      RCLCPP_FATAL(rclcpp::get_logger("VescHardwareInterface"), "Expected 2 joints: [drive_train, steering]");
+      RCLCPP_FATAL(rclcpp::get_logger("VescHardwareInterface"), "Expected 2 joints: [motor, steering]");
       return hardware_interface::CallbackReturn::ERROR;
     }
 
-    const auto &drive_train_joint = info.joints[0];
+    const auto &motor_joint = info.joints[0];
     const auto &steering_joint = info.joints[1];
-    if (not check_drive_train_info(drive_train_joint) or not check_steering_info(steering_joint))
+    
+    if (not check_motor_info(motor_joint) or not check_steering_info(steering_joint))
     {
       return hardware_interface::CallbackReturn::ERROR;
     }
@@ -54,6 +52,7 @@ namespace racecar_hardware
 
   void VescHardwareInterface::set_interface_fields(const hardware_interface::HardwareInfo &info)
   {
+
     // For each joint...
     for (const auto &joint : info.joints)
     {
@@ -62,11 +61,15 @@ namespace racecar_hardware
       for (const auto &command : joint.command_interfaces)
       {
         ControlInterface control;
-        double min = std::stod(command.min);
-        double max = std::stod(command.max);
-        control.value = std::clamp(0.0, min, max);
-        control.limits = std::make_pair(min, max);
+        control.min = std::stod(command.min);
+        control.max = std::stod(command.max);
+        control.value = 0.0;
         controls_[joint.name][command.name] = control;
+
+        if (joint.name == "motor")
+        {
+          command_type_ = command_types[command.name];
+        }
       }
 
       // ...and state interface values.
@@ -86,8 +89,13 @@ namespace racecar_hardware
     }
   }
 
-  bool VescHardwareInterface::check_drive_train_info(const hardware_interface::ComponentInfo &info)
+  bool VescHardwareInterface::check_motor_info(const hardware_interface::ComponentInfo &info)
   {
+    if (info.command_interfaces.size() != 1)
+    {
+      RCLCPP_FATAL(rclcpp::get_logger("VescHardwareInterface"), "Motor joint can be controlled only by a single command at a time. One of: current, duty_cycle, erpm");
+      return false;
+    }
     return true;
   }
 
@@ -189,37 +197,50 @@ namespace racecar_hardware
 
   hardware_interface::return_type VescHardwareInterface::read(const rclcpp::Time & /*time*/, const rclcpp::Duration & /*period*/)
   {
-    states_["drive_train"]["erpm"] = packet_data_.motor_data->rpm();
-    states_["drive_train"]["velocity"] = (packet_data_.motor_data->rpm() - config_.erpm_offset) / config_.erpm_gain;
-    states_["drive_train"]["duty_cycle"] = packet_data_.motor_data->duty_cycle_now();
-    states_["drive_train"]["current_motor"] = packet_data_.motor_data->avg_motor_current();
-    states_["drive_train"]["current_input"] = packet_data_.motor_data->avg_input_current();
-    states_["drive_train"]["voltage"] = packet_data_.motor_data->v_in();
-    states_["drive_train"]["charge_drawn"] = packet_data_.motor_data->amp_hours();
-    states_["drive_train"]["charge_regenerated"] = packet_data_.motor_data->amp_hours_charged();
-    states_["drive_train"]["displacement"] = packet_data_.motor_data->tachometer();
-    states_["drive_train"]["distance_travelled"] = packet_data_.motor_data->tachometer_abs();
+    if (packet_data_.motor_data)
+    {
+      states_["motor"]["erpm"] = packet_data_.motor_data->rpm();
+      states_["motor"]["velocity"] = (packet_data_.motor_data->rpm() - config_.erpm_offset) / config_.erpm_gain;
+      states_["motor"]["duty_cycle"] = packet_data_.motor_data->duty_cycle_now();
+      states_["motor"]["current_motor"] = packet_data_.motor_data->avg_motor_current();
+      states_["motor"]["current_input"] = packet_data_.motor_data->avg_input_current();
+      states_["motor"]["voltage"] = packet_data_.motor_data->v_in();
+      states_["motor"]["charge_drawn"] = packet_data_.motor_data->amp_hours();
+      states_["motor"]["charge_regenerated"] = packet_data_.motor_data->amp_hours_charged();
+      states_["motor"]["displacement"] = packet_data_.motor_data->tachometer();
+      states_["motor"]["distance_travelled"] = packet_data_.motor_data->tachometer_abs();
+      states_["steering"]["angle"] = controls_["steering"]["angle"].clamped_value();
+    }
+    else
+    {
+      RCLCPP_WARN(rclcpp::get_logger("VescHardwareInterface"), "No motor data packet available yet.");
+    }
 
-    states_["steering"]["angle"] = controls_["steering"]["angle"].value;
+    if (packet_data_.imu_data)
+    {
+      states_["gyroscope"]["yaw"] = packet_data_.imu_data->yaw();
+      states_["gyroscope"]["pitch"] = packet_data_.imu_data->pitch();
+      states_["gyroscope"]["roll"] = packet_data_.imu_data->roll();
+      states_["gyroscope"]["x"] = packet_data_.imu_data->gyr_x();
+      states_["gyroscope"]["y"] = packet_data_.imu_data->gyr_y();
+      states_["gyroscope"]["z"] = packet_data_.imu_data->gyr_z();
+      states_["gyroscope"]["q.x"] = packet_data_.imu_data->q_x();
+      states_["gyroscope"]["q.y"] = packet_data_.imu_data->q_y();
+      states_["gyroscope"]["q.z"] = packet_data_.imu_data->q_z();
+      states_["gyroscope"]["q.w"] = packet_data_.imu_data->q_w();
 
-    states_["gyroscope"]["yaw"] = packet_data_.imu_data->yaw();
-    states_["gyroscope"]["pitch"] = packet_data_.imu_data->pitch();
-    states_["gyroscope"]["roll"] = packet_data_.imu_data->roll();
-    states_["gyroscope"]["x"] = packet_data_.imu_data->gyr_x();
-    states_["gyroscope"]["y"] = packet_data_.imu_data->gyr_y();
-    states_["gyroscope"]["z"] = packet_data_.imu_data->gyr_z();
-    states_["gyroscope"]["q.x"] = packet_data_.imu_data->q_x();
-    states_["gyroscope"]["q.y"] = packet_data_.imu_data->q_y();
-    states_["gyroscope"]["q.z"] = packet_data_.imu_data->q_z();
-    states_["gyroscope"]["q.w"] = packet_data_.imu_data->q_w();
+      states_["accelerometer"]["x"] = packet_data_.imu_data->acc_x();
+      states_["accelerometer"]["y"] = packet_data_.imu_data->acc_y();
+      states_["accelerometer"]["z"] = packet_data_.imu_data->acc_z();
 
-    states_["accelerometer"]["x"] = packet_data_.imu_data->acc_x();
-    states_["accelerometer"]["y"] = packet_data_.imu_data->acc_y();
-    states_["accelerometer"]["z"] = packet_data_.imu_data->acc_z();
-
-    states_["magnetometer"]["x"] = packet_data_.imu_data->mag_x();
-    states_["magnetometer"]["y"] = packet_data_.imu_data->mag_y();
-    states_["magnetometer"]["z"] = packet_data_.imu_data->mag_z();
+      states_["magnetometer"]["x"] = packet_data_.imu_data->mag_x();
+      states_["magnetometer"]["y"] = packet_data_.imu_data->mag_y();
+      states_["magnetometer"]["z"] = packet_data_.imu_data->mag_z();
+    }
+    else
+    {
+      RCLCPP_WARN(rclcpp::get_logger("VescHardwareInterface"), "No IMU data packet available yet.");
+    }
 
     vesc_.requestState();
     vesc_.requestImuData();
@@ -229,47 +250,24 @@ namespace racecar_hardware
 
   hardware_interface::return_type racecar_hardware::VescHardwareInterface::write(const rclcpp::Time & /*time*/, const rclcpp::Duration & /*period*/)
   {
-    auto enforce_limits = [](const ControlInterface &control)
-    {
-      auto [min, max] = control.limits;
-      return std::clamp(control.value, min, max);
-    };
-
-    auto print = [](std::map<std::string, std::map<std::string, ControlInterface>> map)
-    {
-      for (auto itr1 = map.begin(); itr1 != map.end(); itr1++)
-      {
-        std::cout << itr1->first << ' '; // Add space to separate entries on the same line
-        for (auto itr2 = itr1->second.begin(); itr2 != itr1->second.end(); itr2++)
-        {
-          std::cout << itr2->first << " (" << itr2->second.value << ", " << itr2->second.limits.first << ", " << itr2->second.limits.second << ") " << std::endl;
-        }
-        std::cout << std::endl;
-      }
-    };
-
     // target_velocity_ * erpm_gain_ + erpm_offset_;
     // print(controls_);
-    if (config_.activate_erpm)
+    switch (command_type_)
     {
-      auto erpm = enforce_limits(controls_["drive_train"]["erpm"]);
-      vesc_.setSpeed(erpm);
-    }
-    if (config_.activate_current)
-    {
-      auto current = enforce_limits(controls_["drive_train"]["current"]);
-      vesc_.setCurrent(current);
+    case CURRENT:
+      vesc_.setCurrent(controls_["motor"]["current"].clamped_value());
+      break;
+    case DUTY_CYCLE:
+      vesc_.setDutyCycle(controls_["motor"]["duty_cycle"].clamped_value());
+      break;
+    case ERPM:
+      vesc_.setSpeed(controls_["motor"]["erpm"].clamped_value());
+      break;
     }
 
-    if (config_.activate_duty_cycle)
-    {
-      auto duty_cycle = enforce_limits(controls_["drive_train"]["duty_cycle"]);
-      vesc_.setDutyCycle(duty_cycle);
-    }
-    
-    auto angle = enforce_limits(controls_["steering"]["angle"]);
+    auto angle = controls_["steering"]["angle"].clamped_value();
     vesc_.setServo(config_.servo_gain * angle + config_.servo_offset);
-    
+
     return hardware_interface::return_type::OK;
   }
 
