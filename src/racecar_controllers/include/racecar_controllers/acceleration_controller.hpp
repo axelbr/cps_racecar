@@ -24,7 +24,6 @@ namespace racecar_controllers
     controller_interface::CallbackReturn on_deactivate(const rclcpp_lifecycle::State &previous_state) override;
 
   private:
-    rclcpp::Subscription<sensor_msgs::msg::Joy>::SharedPtr command_sub;
 
     struct PIDParams {
       double P, I, D, min, max;
