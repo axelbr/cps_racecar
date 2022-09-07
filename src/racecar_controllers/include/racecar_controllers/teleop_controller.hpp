@@ -26,6 +26,8 @@ private:
     rclcpp::Subscription<sensor_msgs::msg::Joy>::SharedPtr command_sub;
     double effort = 0.0;
     double steering_angle = 0.0;
+    std::string drive_train_command;
+    double min_motor_command, max_motor_command, motor_command_scale, motor_command_offset;
 };
 
 }  // namespace teleop_controllers

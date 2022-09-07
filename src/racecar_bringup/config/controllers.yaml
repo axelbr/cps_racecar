@@ -5,9 +5,16 @@ controller_manager:
     teleop_controller:
       type: racecar_controllers/TeleopController
 
-    joint_state_broadcaster:
-      type: joint_state_broadcaster/JointStateBroadcaster
+    power_train_broadcaster:
+      type: racecar_controllers/PowerTrainBroadcaster
+
+    vesc_imu_broadcaster:
+      type: racecar_controllers/VescImuBroadcaster
 
 teleop_controller:
   ros__parameters:
     drive_train_command: "current"
+    max_motor_command: 60.0
+    min_motor_command: -20.0
+    motor_command_scale: 60.0
+  

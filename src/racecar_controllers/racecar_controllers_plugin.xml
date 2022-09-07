@@ -4,4 +4,14 @@
       Controller that listens on joystick commands. Just for debugging.
     </description>
   </class>
+  <class name="racecar_controllers/PowerTrainBroadcaster" type="racecar_controllers::PowerTrainBroadcaster" base_class_type="controller_interface::ControllerInterface">
+    <description>
+      Reads the vesc hardware interface and publishes state information about the racecar's powertrain.
+    </description>
+  </class>
+  <class name="racecar_controllers/VescImuBroadcaster" type="racecar_controllers::VescImuBroadcaster" base_class_type="controller_interface::ControllerInterface">
+    <description>
+      Reads the imu data from the vesc hardware interface and publishes it as Imu messages.
+    </description>
+  </class>
 </library>

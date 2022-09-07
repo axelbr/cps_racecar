@@ -24,8 +24,9 @@ namespace racecar_hardware
 
     // Set hardware config
     config_.hw_port = info_.hardware_parameters["vesc_port"];
-    config_.erpm_gain = std::stod(info_.hardware_parameters["erpm_gain"]);
-    config_.erpm_offset = std::stod(info_.hardware_parameters["erpm_offset"]);
+    config_.transmission_ratio = std::stod(info_.hardware_parameters["transmission_ratio"]);
+    config_.wheel_diameter = std::stoi(info_.hardware_parameters["wheel_diameter"]);
+    config_.motor_poles = std::stoi(info_.hardware_parameters["motor_poles"]);
     config_.servo_gain = std::stod(info_.hardware_parameters["servo_gain"]);
     config_.servo_offset = std::stod(info_.hardware_parameters["servo_offset"]);
 
@@ -199,17 +200,23 @@ namespace racecar_hardware
   {
     if (packet_data_.motor_data)
     {
-      states_["motor"]["erpm"] = packet_data_.motor_data->rpm();
-      states_["motor"]["velocity"] = (packet_data_.motor_data->rpm() - config_.erpm_offset) / config_.erpm_gain;
+      auto motor_rpm = packet_data_.motor_data->rpm() / config_.motor_poles;
+
+      states_["motor"]["rpm"] = motor_rpm;
       states_["motor"]["duty_cycle"] = packet_data_.motor_data->duty_cycle_now();
+      states_["motor"]["current_control"] = controls_["motor"]["current"].clamped_value();
       states_["motor"]["current_motor"] = packet_data_.motor_data->avg_motor_current();
       states_["motor"]["current_input"] = packet_data_.motor_data->avg_input_current();
       states_["motor"]["voltage"] = packet_data_.motor_data->v_in();
       states_["motor"]["charge_drawn"] = packet_data_.motor_data->amp_hours();
       states_["motor"]["charge_regenerated"] = packet_data_.motor_data->amp_hours_charged();
-      states_["motor"]["displacement"] = packet_data_.motor_data->tachometer();
-      states_["motor"]["distance_travelled"] = packet_data_.motor_data->tachometer_abs();
       states_["steering"]["angle"] = controls_["steering"]["angle"].clamped_value();
+
+      auto wheels_rpm = motor_rpm / config_.transmission_ratio;
+      states_["power_train_feedback"]["wheels_rpm"] = wheels_rpm;
+      states_["power_train_feedback"]["speed"] = wheels_rpm / 60.0 * M_PI * config_.wheel_diameter / 1000.0;
+      states_["power_train_feedback"]["displacement"] = packet_data_.motor_data->tachometer();
+      states_["power_train_feedback"]["distance_travelled"] = packet_data_.motor_data->tachometer_abs();
     }
     else
     {

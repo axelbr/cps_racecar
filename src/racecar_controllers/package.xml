@@ -11,6 +11,8 @@
   
   <depend>rclcpp</depend>
   <build_depend>pluginlib</build_depend>
+  <build_depend>ackermann_msgs</build_depend>
+  <build_depend>racecar_msgs</build_depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>

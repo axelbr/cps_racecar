@@ -21,11 +21,11 @@ def generate_launch_description():
     )
     
     plotter = Node(
-        package='plotjuggler',
-        executable='plotjuggler',
-        name='plotjuggler',
+        package='rqt_gui',
+        executable='rqt_gui',
+        name='plotting',
         output='screen',
-        arguments=["-l", os.path.join(pkg_share, "config", "plots.xml")]
+        arguments=["--perspective-file", os.path.join(pkg_share, "config", "racecar.perspective")]
     )
 
     joint_state_publisher_gui_node = Node(

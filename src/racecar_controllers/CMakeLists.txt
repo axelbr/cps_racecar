@@ -19,7 +19,9 @@ set(THIS_PACKAGE_INCLUDE_DEPENDS
     rclcpp_lifecycle
     realtime_tools
     std_msgs
+    racecar_msgs
     ackermann_msgs
+    nav_msgs
 )
 
 find_package(ament_cmake REQUIRED)
@@ -32,6 +34,8 @@ add_library(${PROJECT_NAME}
   src/teleop_controller.cpp
   src/PID.cpp
   src/acceleration_controller.cpp
+  src/power_train_broadcaster.cpp
+  src/vesc_imu_broadcaster.cpp
 )
 target_include_directories(${PROJECT_NAME} PRIVATE include)
 ament_target_dependencies(${PROJECT_NAME} ${THIS_PACKAGE_INCLUDE_DEPENDS})

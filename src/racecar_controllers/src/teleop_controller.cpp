@@ -1,47 +1,50 @@
 #include "racecar_controllers/teleop_controller.hpp"
 #include "rclcpp/logging.hpp"
+#include <algorithm>
 
 namespace racecar_controllers
 {
 
   TeleopController::TeleopController() : controller_interface::ControllerInterface()
   {
+
   }
 
   controller_interface::CallbackReturn TeleopController::on_init()
   {
-    RCLCPP_INFO(get_node()->get_logger(), "on init");
+    auto_declare<std::string>("drive_train_command", std::string("current"));
+    auto_declare<double>("min_motor_command", -10.0);
+    auto_declare<double>("motor_command_scale", 10.0);
+    auto_declare<double>("motor_command_offset", 0);
+    auto_declare<double>("max_motor_command", 10.0);
     return controller_interface::CallbackReturn::SUCCESS;
   }
 
   controller_interface::CallbackReturn TeleopController::on_configure(const rclcpp_lifecycle::State &previous_state)
-  {
-    RCLCPP_INFO(get_node()->get_logger(), "on configure");
+  { 
+    drive_train_command = get_node()->get_parameter("drive_train_command").as_string();
+    min_motor_command = get_node()->get_parameter("min_motor_command").as_double();
+    max_motor_command = get_node()->get_parameter("max_motor_command").as_double();
+    motor_command_scale = get_node()->get_parameter("motor_command_scale").as_double();
+    motor_command_offset = get_node()->get_parameter("motor_command_offset").as_double();
+    
     auto callback = [this](const sensor_msgs::msg::Joy &msg)
     {
-      RCLCPP_INFO(get_node()->get_logger(), "Effort: %f", msg.axes[1]);
-      auto drive_train_command = this->get_node()->get_parameter("drive_train_command").as_string();
-      if (drive_train_command == "current")
-      {
-        this->effort = msg.axes[1] * 60.0;
+      if (msg.buttons[4] == 1) {
+        this->effort = std::clamp(motor_command_scale * msg.axes[1] + motor_command_offset, min_motor_command, max_motor_command);
+        this->steering_angle = msg.axes[3];
+      } else {
+        this->effort = 0.0;
+        this->steering_angle = 0.0;
       }
-      else if (drive_train_command == "duty_cycle") {
-        this->effort = msg.axes[1];
-      } else
-      {
-        this->effort = msg.axes[1] * 30000.0;
-      }
-      this->steering_angle = msg.axes[3];
+      RCLCPP_INFO(this->get_node()->get_logger(), "Effort=%f", msg.buttons[4], this->effort);
     };
     command_sub = this->get_node()->create_subscription<sensor_msgs::msg::Joy>("joy", 10, callback);
-
-    RCLCPP_INFO(get_node()->get_logger(), "configure successful");
     return controller_interface::CallbackReturn::SUCCESS;
   }
 
   controller_interface::InterfaceConfiguration TeleopController::command_interface_configuration() const
   {
-    RCLCPP_INFO(get_node()->get_logger(), "command interface configuration");
     auto drive_train_command = get_node()->get_parameter("drive_train_command").as_string();
     controller_interface::InterfaceConfiguration command_interfaces_config;
     command_interfaces_config.type = controller_interface::interface_configuration_type::INDIVIDUAL;
@@ -51,20 +54,17 @@ namespace racecar_controllers
 
   controller_interface::InterfaceConfiguration TeleopController::state_interface_configuration() const
   {
-    RCLCPP_INFO(get_node()->get_logger(), "state interface configuration");
     return controller_interface::InterfaceConfiguration{
         controller_interface::interface_configuration_type::NONE};
   }
 
   controller_interface::CallbackReturn TeleopController::on_activate(const rclcpp_lifecycle::State & /*previous_state*/)
   {
-    RCLCPP_INFO(get_node()->get_logger(), "on activate");
     return controller_interface::CallbackReturn::SUCCESS;
   }
 
   controller_interface::CallbackReturn TeleopController::on_deactivate(const rclcpp_lifecycle::State & /*previous_state*/)
   {
-    RCLCPP_INFO(get_node()->get_logger(), "on deactivate");
     return controller_interface::CallbackReturn::SUCCESS;
   }
 

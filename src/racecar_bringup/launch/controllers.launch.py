@@ -27,10 +27,16 @@ def generate_launch_description():
     )
 
     # Spawns state broadcaster for the hardware interface
-    joint_state_broadcaster_spawner = Node(
+    power_train_broadcaster_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["joint_state_broadcaster", "--controller-manager", "/controller_manager"],
+        arguments=["power_train_broadcaster", "--controller-manager", "/controller_manager"],
+    )
+
+    vesc_imu_broadcaster_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["vesc_imu_broadcaster", "--controller-manager", "/controller_manager"],
     )
 
     # Spawns a controller for the hardware interface
@@ -43,7 +49,7 @@ def generate_launch_description():
     # Delays the launch of the controller until the broadcaster is spawned
     delay_robot_controller_spawner_after_joint_state_broadcaster_spawner = RegisterEventHandler(
         event_handler=OnProcessExit(
-            target_action=joint_state_broadcaster_spawner,
+            target_action=power_train_broadcaster_spawner,
             on_exit=[teleop_controller_spawner],
         )
     )
@@ -53,6 +59,7 @@ def generate_launch_description():
         DeclareLaunchArgument('model', default_value='', description='Path to urdf file.'),
         DeclareLaunchArgument('controller_config', default_value='', description='Controller configuration file.'),
         controller_manager,
-        joint_state_broadcaster_spawner,
+        vesc_imu_broadcaster_spawner,
+        power_train_broadcaster_spawner,
         delay_robot_controller_spawner_after_joint_state_broadcaster_spawner
     ])

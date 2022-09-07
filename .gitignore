@@ -3,3 +3,4 @@ install
 log
 __pychache__
 .idea
+data/rosbags
