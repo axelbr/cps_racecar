@@ -5,7 +5,7 @@
   <xacro:include filename="$(find racecar_description)/urdf/description.urdf.xacro" />
 
   <!--<xacro:include filename="$(find racecar_description)/urdf/hardware_interfaces/vesc_current.xacro" />--> 
-  <xacro:include filename="$(find racecar_description)/urdf/hardware_interfaces/vesc_current.xacro" /> 
+  <xacro:include filename="$(find racecar_description)/urdf/hardware_interfaces/vesc_torque.xacro" /> 
 
 
 </robot>

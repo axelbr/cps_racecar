@@ -9,6 +9,7 @@
 #include <string>
 #include <exception>
 #include <functional>
+#include <math.h>
 
 #include "hardware_interface/types/hardware_interface_type_values.hpp"
 #include "rclcpp/rclcpp.hpp"
@@ -27,6 +28,8 @@ namespace racecar_hardware
     config_.transmission_ratio = std::stod(info_.hardware_parameters["transmission_ratio"]);
     config_.wheel_diameter = std::stoi(info_.hardware_parameters["wheel_diameter"]);
     config_.motor_poles = std::stoi(info_.hardware_parameters["motor_poles"]);
+    auto kv = std::stod(info_.hardware_parameters["kv_rating"]);
+    config_.torque_motor_constant = (3.0 / 2.0) * (1.0 / std::sqrt(3.0)) * (60.0 / M_2_PI) * (1.0 / (double) kv);
     config_.servo_gain = std::stod(info_.hardware_parameters["servo_gain"]);
     config_.servo_offset = std::stod(info_.hardware_parameters["servo_offset"]);
 
@@ -214,6 +217,7 @@ namespace racecar_hardware
 
       auto wheels_rpm = motor_rpm / config_.transmission_ratio;
       states_["power_train_feedback"]["wheels_rpm"] = wheels_rpm;
+      states_["power_train_feedback"]["torque"] = this->config_.torque_motor_constant * packet_data_.motor_data->avg_motor_current();
       states_["power_train_feedback"]["speed"] = wheels_rpm / 60.0 * M_PI * config_.wheel_diameter / 1000.0;
       states_["power_train_feedback"]["displacement"] = packet_data_.motor_data->tachometer();
       states_["power_train_feedback"]["distance_travelled"] = packet_data_.motor_data->tachometer_abs();

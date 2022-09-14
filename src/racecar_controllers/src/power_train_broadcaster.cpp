@@ -41,6 +41,7 @@ namespace racecar_controllers
       "motor/charge_regenerated",
       "power_train_feedback/wheels_rpm",
       "power_train_feedback/speed",
+      "power_train_feedback/torque",
       "steering/angle"
     };
     return state_interfaces_config;
@@ -70,6 +71,7 @@ namespace racecar_controllers
       msg.wheel_rpms[i] = states_["power_train_feedback/wheels_rpm"];
     }
     msg.speed = states_["power_train_feedback/speed"];
+    msg.torque = states_["power_train_feedback/torque"];
     msg.motor_current = states_["motor/current_motor"];
     msg.motor_rpm = states_["motor/rpm"];
     msg.input_current = states_["motor/current_input"];

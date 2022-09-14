@@ -38,7 +38,7 @@ struct VescPacketData
 
 struct VescConfig {
   std::string hw_port;
-  double servo_gain, servo_offset, transmission_ratio;
+  double servo_gain, servo_offset, transmission_ratio, torque_motor_constant;
   int wheel_diameter, motor_poles;
   bool activate_duty_cycle, activate_current, activate_erpm;
 };
@@ -54,6 +54,7 @@ struct ControlInterface {
 };
 
 enum MotorCommandType {
+  TORQUE,
   CURRENT,
   DUTY_CYCLE,
   ERPM
